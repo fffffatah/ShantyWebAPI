@@ -20,7 +20,7 @@ namespace ShantyWebAPI.Controllers
             ListenerGlobalModel listenerGlobalModel = new ListenerGlobalModel();
             listenerGlobalModel.Id = BCrypt.Net.BCrypt.HashPassword(listenerRegistrationModel.Username + DateTime.Now.ToString("dddd, dd MMMM yyyy HH:mm:ss"));
             listenerGlobalModel.ProfileImage = listenerRegistrationModel.ProfileImage;
-            listenerGlobalModel.ProfileImageUrl = "";
+            listenerGlobalModel.ProfileImageUrl = ""; //TODO: upload to blob storage and return uri
             listenerGlobalModel.Username = listenerRegistrationModel.Username;
             listenerGlobalModel.FirstName = listenerRegistrationModel.FirstName;
             listenerGlobalModel.LastName = listenerRegistrationModel.LastName;

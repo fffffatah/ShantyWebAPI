@@ -16,6 +16,7 @@ namespace ShantyWebAPI.Controllers.User
             dbConnection = new MysqlConnectionProvider();
         }
 
+        //LISTENER REGISTRATION
         public bool RegisterListener(ListenerGlobalModel listener)
         {
             bool InsertListenerMysql()
