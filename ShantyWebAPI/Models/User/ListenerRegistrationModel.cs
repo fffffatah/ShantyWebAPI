@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using ShantyWebAPI.CustomAttribute;
+using ShantyWebAPI.CustomAttributes;
 
 namespace ShantyWebAPI.Models.User
 {

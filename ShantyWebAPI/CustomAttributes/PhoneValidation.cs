@@ -6,16 +6,16 @@ using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
 using ShantyWebAPI.Providers;
 
-namespace ShantyWebAPI.CustomAttribute
+namespace ShantyWebAPI.CustomAttributes
 {
-    public class UsernameValidation:ValidationAttribute
+    public class PhoneValidation:ValidationAttribute
     {
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
-            bool IsUsernameTaken(string username)
+            bool IsPhoneTaken(string phone)
             {
                 MysqlConnectionProvider dbConnection = new MysqlConnectionProvider();
-                dbConnection.CreateQuery("SELECT COUNT(*) AS \"COUNTER\" FROM users WHERE username='" + username + "'");
+                dbConnection.CreateQuery("SELECT COUNT(*) AS \"COUNTER\" FROM users WHERE phone='" + phone + "'");
                 MySqlDataReader reader = dbConnection.DoQuery();
                 string counter = "";
                 while (reader.Read())
@@ -25,10 +25,10 @@ namespace ShantyWebAPI.CustomAttribute
                 dbConnection.Dispose();
                 return !counter.Equals("0");
             }
-            if (value != null && IsUsernameTaken(value.ToString()))
+            if (value != null && IsPhoneTaken(value.ToString()))
             {
-                return new ValidationResult(ErrorMessage = "Username Taken");
-            } 
+                return new ValidationResult(ErrorMessage = "Phone Taken");
+            }
             return ValidationResult.Success;
         }
     }

@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ShantyWebAPI.CustomAttribute
+namespace ShantyWebAPI.CustomAttributes
 {
     public class DobValidation:ValidationAttribute
     {
