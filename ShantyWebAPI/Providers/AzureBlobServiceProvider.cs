@@ -38,19 +38,10 @@ namespace ShantyWebAPI.Providers
         {
             try
             {
-                // Create a BlobServiceClient object which will be used to create a container client
                 BlobServiceClient blobServiceClient = new BlobServiceClient(Environment.GetEnvironmentVariable("BLOB_CONN_STRING"));
-
-                //Create a unique name for the container
                 string containerName = "shanty";
-
-                // Create the container and return a container client object
                 BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient(containerName);
-
-                // Get a reference to a blob
                 BlobClient blobClient = containerClient.GetBlobClient(strFileName);
-
-                // Open the file and upload its data
                 using (var stream = file.OpenReadStream())
                 {
                     await blobClient.UploadAsync(stream);
