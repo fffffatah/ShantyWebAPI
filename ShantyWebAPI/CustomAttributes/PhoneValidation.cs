@@ -25,9 +25,16 @@ namespace ShantyWebAPI.CustomAttributes
                 dbConnection.Dispose();
                 return !counter.Equals("0");
             }
-            if (value != null && IsPhoneTaken(value.ToString()))
+            if(value != null)
             {
-                return new ValidationResult(ErrorMessage = "Phone Taken");
+                if (IsPhoneTaken(value.ToString()))
+                {
+                    return new ValidationResult(ErrorMessage = "Phone Taken");
+                }
+            }
+            else
+            {
+                return new ValidationResult(ErrorMessage = "Phone Required");
             }
             return ValidationResult.Success;
         }

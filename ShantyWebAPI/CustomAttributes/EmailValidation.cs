@@ -25,24 +25,16 @@ namespace ShantyWebAPI.CustomAttributes
                 dbConnection.Dispose();
                 return !counter.Equals("0");
             }
-            bool IsEmailValid(string email)
+            if(value != null)
             {
-                try
+                if (IsEmailTaken(value.ToString()))
                 {
-                    var addr = new System.Net.Mail.MailAddress(email);
-                    return addr.Address == email;
-                }
-                catch
-                {
-                    return false;
+                    return new ValidationResult(ErrorMessage = "Email Taken");
                 }
             }
-            if (value != null && IsEmailTaken(value.ToString()))
+            else
             {
-                return new ValidationResult(ErrorMessage = "Email Taken");
-            }
-            if (value != null && IsEmailValid(value.ToString())){
-                return new ValidationResult(ErrorMessage = "Email Invalid");
+                return new ValidationResult(ErrorMessage = "Email Required");
             }
             return ValidationResult.Success;
         }

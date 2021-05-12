@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using MongoDB.Bson;
 using ShantyWebAPI.Models.User;
 using ShantyWebAPI.Providers;
@@ -14,6 +15,13 @@ namespace ShantyWebAPI.Controllers.User
         public UserDataAccess()
         {
             dbConnection = new MysqlConnectionProvider();
+        }
+        //COMMON METHODS
+        public string UploadProfileImage(IFormFile profileImage, string id)
+        {
+            string imageName = "profileimages/" + id;
+            AzureBlobServiceProvider azureBlob = new AzureBlobServiceProvider();
+            return azureBlob.UploadFileToBlob(imageName, profileImage);
         }
 
         //LISTENER REGISTRATION

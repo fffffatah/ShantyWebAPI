@@ -22,9 +22,16 @@ namespace ShantyWebAPI.CustomAttributes
                 }
                 return true;
             }
-            if (value != null && IsValidDob(value.ToString()))
+            if(value != null)
             {
-                return new ValidationResult("Listener Must be At Least 13 Years Old");
+                if (!IsValidDob(value.ToString()))
+                {
+                    return new ValidationResult("Listener Must be At Least 13 Years Old ");
+                }
+            }
+            else
+            {
+                return new ValidationResult("Dob Required");
             }
             return ValidationResult.Success;
         }

@@ -25,10 +25,17 @@ namespace ShantyWebAPI.CustomAttributes
                 dbConnection.Dispose();
                 return !counter.Equals("0");
             }
-            if (value != null && IsUsernameTaken(value.ToString()))
+            if(value != null)
             {
-                return new ValidationResult(ErrorMessage = "Username Taken");
-            } 
+                if (IsUsernameTaken(value.ToString()))
+                {
+                    return new ValidationResult(ErrorMessage = "Username Taken");
+                }
+            }
+            else
+            {
+                return new ValidationResult(ErrorMessage = "Username Required");
+            }
             return ValidationResult.Success;
         }
     }
