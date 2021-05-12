@@ -39,7 +39,7 @@ namespace ShantyWebAPI.Providers
             try
             {
                 // Create a BlobServiceClient object which will be used to create a container client
-                BlobServiceClient blobServiceClient = new BlobServiceClient(@"DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://127.0.0.1:10000/devstoreaccount1;");
+                BlobServiceClient blobServiceClient = new BlobServiceClient(Environment.GetEnvironmentVariable("BLOB_CONN_STRING"));
 
                 //Create a unique name for the container
                 string containerName = "shanty";
