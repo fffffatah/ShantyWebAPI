@@ -23,7 +23,12 @@ namespace ShantyWebAPI.Controllers.User
             AzureBlobServiceProvider azureBlob = new AzureBlobServiceProvider();
             return azureBlob.UploadFileToBlob(imageName, profileImage);
         }
-
+        public string UploadLabelIcon(IFormFile labelIcon, string id)
+        {
+            string imageName = "labelicons/" + id;
+            AzureBlobServiceProvider azureBlob = new AzureBlobServiceProvider();
+            return azureBlob.UploadFileToBlob(imageName, labelIcon);
+        }
         //LISTENER REGISTRATION
         public bool RegisterListener(ListenerGlobalModel listener)
         {
@@ -55,6 +60,40 @@ namespace ShantyWebAPI.Controllers.User
                 return true;
             }
             if (InsertListenerMysql() && InsertListenerMongo())
+            {
+                return true;
+            }
+            return false;
+        }
+        public bool RegisterLabel(LabelGlobalModel label)
+        {
+            bool InsertLabelMysql()
+            {
+                dbConnection.CreateQuery("INSERT INTO users(id, username, email, phone, pass, type, isemailverified) VALUES ('" + label.Id + "','" + label.Username + "','" + label.Email + "','" + label.Phone + "','" + label.Pass + "','" + label.Type + "','" + label.IsEmailVerified + "')");
+                if ((dbConnection.DoNoQuery()) < 1)
+                {
+                    dbConnection.Dispose();
+                    return false;
+                }
+                dbConnection.Dispose();
+                return true;
+            }
+            bool InsertLabelMongo()
+            {
+                var collection = new MongodbConnectionProvider().GeShantyDatabase().GetCollection<BsonDocument>("labels");
+                var document = new BsonDocument
+                {
+                    { "Id", label.Id },
+                    { "LabelIconUrl", label.LabelIconUrl },
+                    { "LabelName", label.LabelName },
+                    { "EstDate", label.EstDate },
+                    { "Region", label.Region },
+                    { "IsVerified", label.IsVerified }
+                };
+                collection.InsertOne(document);
+                return true;
+            }
+            if(InsertLabelMysql() && InsertLabelMongo())
             {
                 return true;
             }
