@@ -10,15 +10,6 @@ namespace ShantyWebAPI.Providers
 {
     public class AzureBlobServiceProvider
     {
-        public string UploadFile(IFormFile file, string blobName)
-        {
-            BlobServiceClient blobServiceClient = new BlobServiceClient(Environment.GetEnvironmentVariable("BLOB_CONN_STRING"));
-
-            var containerClient = blobServiceClient.GetBlobContainerClient("shanty");
-            var blobClient = containerClient.GetBlobClient(blobName);
-            blobClient.Upload(file.OpenReadStream());
-            return blobClient.Uri.ToString();
-        }
         public string UploadFileToBlob(string strFileName, IFormFile file)
         {
             try
