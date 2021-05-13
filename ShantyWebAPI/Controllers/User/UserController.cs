@@ -50,6 +50,7 @@ namespace ShantyWebAPI.Controllers.User
             listenerGlobalModel.Type = "listener";
             if(new UserDataAccess().RegisterListener(listenerGlobalModel))
             {
+                //TODO: send confirmation email
                 return StatusCode(StatusCodes.Status200OK, "Listener Account Created");
             }
             return StatusCode(StatusCodes.Status400BadRequest, "Listener Account Creation Failed");
@@ -74,9 +75,37 @@ namespace ShantyWebAPI.Controllers.User
             labelGlobalModel.Type = "label";
             if(new UserDataAccess().RegisterLabel(labelGlobalModel))
             {
+                //TODO: send confirmation email
                 return StatusCode(StatusCodes.Status200OK, "Label Account Created");
             }
             return StatusCode(StatusCodes.Status400BadRequest, "Label Account Creation Failed");
+        }
+        [HttpPost]
+        [Route("register/artist")]
+        public ActionResult<ArtistRegistrationModel> PutArtist([FromForm] ArtistRegistrationModel artistRegistrationModel)
+        {
+            ArtistGlobalModel artistGlobalModel = new ArtistGlobalModel();
+            artistGlobalModel.Id = GenerateUserId(artistRegistrationModel.Username + DateTime.Now.ToString("dddd, dd MMMM yyyy HH:mm:ss"));
+            artistGlobalModel.ProfileImage = artistRegistrationModel.ProfileImage;
+            artistGlobalModel.ProfileImageUrl = new UserDataAccess().UploadProfileImage(artistGlobalModel.ProfileImage, artistGlobalModel.Id);
+            artistGlobalModel.Username = artistRegistrationModel.Username;
+            artistGlobalModel.FirstName = artistRegistrationModel.FirstName;
+            artistGlobalModel.LastName = artistRegistrationModel.LastName;
+            artistGlobalModel.Phone = artistRegistrationModel.Phone;
+            artistGlobalModel.Email = artistRegistrationModel.Email;
+            artistGlobalModel.Region = artistRegistrationModel.Region;
+            artistGlobalModel.Dob = artistRegistrationModel.Dob;
+            artistGlobalModel.Pass = BCrypt.Net.BCrypt.HashPassword(artistRegistrationModel.Pass, BCrypt.Net.BCrypt.GenerateSalt());
+            artistGlobalModel.IsEmailVerified = "false";
+            artistGlobalModel.IsVerified = "false";
+            artistGlobalModel.Type = "artist";
+            artistGlobalModel.LabelId = artistRegistrationModel.LabelId;
+            if(new UserDataAccess().RegisterArtist(artistGlobalModel))
+            {
+                //TODO: send confirmation email
+                return StatusCode(StatusCodes.Status200OK, "Artist Account Created");
+            }
+            return StatusCode(StatusCodes.Status400BadRequest, "Artist Account Creation Failed");
         }
     }
 }

@@ -21,7 +21,7 @@ namespace ShantyWebAPI.CustomAttributes
             }
             else
             {
-                return new ValidationResult(ErrorMessage = "Profile Image Required");
+                return new ValidationResult(ErrorMessage = "Profile Image/Icon Required");
             }
             return ValidationResult.Success;
         }
