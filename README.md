@@ -1,0 +1,1 @@
+[![Build](https://github.com/fffffatah/ShantyWebAPI/actions/workflows/shantyapi.yml/badge.svg?branch=master)](https://github.com/fffffatah/ShantyWebAPI/actions/workflows/shantyapi.yml)
