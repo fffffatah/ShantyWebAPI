@@ -1,4 +1,4 @@
-name: Build and deploy .NET Core application to Web App shantyapi with API Management Service ShantyWebAPIapi-ShantyWebAPI
+name: Build
 on:
   push:
     branches:
