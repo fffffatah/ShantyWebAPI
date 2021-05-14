@@ -18,7 +18,7 @@ env:
   API_IMPORT_SPECIFICATION_PATH: ShantyWebAPI/published/swagger.json
   API_IMPORT_DLL: ShantyWebAPI/bin/Debug/net5.0/ShantyWebAPI.dll
   API_IMPORT_VERSION: v1
-  CONFIGURATION: Release
+  CONFIGURATION: Debug
   DOTNET_CORE_VERSION: 5.0.x
   WORKING_DIRECTORY: ShantyWebAPI
 jobs:
