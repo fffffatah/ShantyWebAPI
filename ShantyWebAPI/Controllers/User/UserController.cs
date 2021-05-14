@@ -28,6 +28,7 @@ namespace ShantyWebAPI.Controllers.User
                 return sb.ToString().ToLower();
             }
         }
+
         //REGSTRATION
         [HttpPost]
         [Route("register/listener")]
@@ -76,7 +77,8 @@ namespace ShantyWebAPI.Controllers.User
             if(new UserDataAccess().RegisterLabel(labelGlobalModel))
             {
                 //TODO: send confirmation email
-                return StatusCode(StatusCodes.Status200OK, "Label Account Created");
+                string baseUrl = $"{Request.Scheme}://{Request.Host.Value}/"+ "/api/User/email/verify";
+                return StatusCode(StatusCodes.Status200OK, "Label Account Created" + baseUrl);
             }
             return StatusCode(StatusCodes.Status400BadRequest, "Label Account Creation Failed");
         }
@@ -106,6 +108,14 @@ namespace ShantyWebAPI.Controllers.User
                 return StatusCode(StatusCodes.Status200OK, "Artist Account Created");
             }
             return StatusCode(StatusCodes.Status400BadRequest, "Artist Account Creation Failed");
+        }
+
+        //VERIFY EMAIL
+        [HttpGet]
+        [Route("email/verify")]
+        public void VerifyEmail(string id)
+        {
+
         }
     }
 }
