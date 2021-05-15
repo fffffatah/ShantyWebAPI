@@ -58,9 +58,9 @@ jobs:
       run: dotnet tool install --global Swashbuckle.AspNetCore.Cli --version ${{ env.SWASHBUCLE_ASPNET_CORE_CLI_PACKAGE_VERSION }}
     - name: Generate Open API Specification Document
       run: swagger tofile --output "${{ env.API_IMPORT_SPECIFICATION_PATH }}" "${{ env.API_IMPORT_DLL }}" ${{ env.API_IMPORT_VERSION }}
+    - name: Generate API Documentation Markdown
     - uses: actions/checkout@v2
     - uses: readmeio/github-readme-sync@v2
-    - name: Generate API Documentation Markdown
       with:
           readme-oas-key: ${{ env.README_OAS_KEY }}
           oas-file-path: ${{ secrets.SWAGGER_JSON_PATH }}
