@@ -21,7 +21,7 @@ env:
   CONFIGURATION: Debug
   DOTNET_CORE_VERSION: 5.0.x
   WORKING_DIRECTORY: ShantyWebAPI
-  README_OAS_SECRET: ${{ secrets.README_OAS_KEY }}
+  README_OAS_KEY: ${{ secrets.README_OAS_SECRET }}
   SWAGGER_JSON_PATH: ${{ secrets.SWAGGER_JSON_PATH }}
 jobs:
   build:
