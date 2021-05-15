@@ -59,8 +59,7 @@ jobs:
     - name: Generate Open API Specification Document
       run: swagger tofile --output "${{ env.API_IMPORT_SPECIFICATION_PATH }}" "${{ env.API_IMPORT_DLL }}" ${{ env.API_IMPORT_VERSION }}
     - name: Generate API Documentation Markdown
-    - uses: actions/checkout@v2
-    - uses: readmeio/github-readme-sync@v2
+      uses: readmeio/github-readme-sync@v2
       with:
           readme-oas-key: ${{ env.README_OAS_KEY }}
           oas-file-path: ${{ secrets.SWAGGER_JSON_PATH }}
