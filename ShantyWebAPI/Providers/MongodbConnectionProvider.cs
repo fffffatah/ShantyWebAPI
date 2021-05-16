@@ -13,7 +13,7 @@ namespace ShantyWebAPI.Providers
 
         public MongodbConnectionProvider()
         {
-            dbClient = new MongoClient(Environment.GetEnvironmentVariable("CUSTOMMONGO_CONN_STRING"));
+            dbClient = new MongoClient(Environment.GetEnvironmentVariable("MONGO_CONN_STRING"));
         }
         public IMongoDatabase GeShantyDatabase()
         {

@@ -15,7 +15,7 @@ namespace ShantyWebAPI.Providers
 
         public MysqlConnectionProvider()
         {
-            con = new MySqlConnection(Environment.GetEnvironmentVariable("CUSTOMMYSQL_CONN_STRING"));
+            con = new MySqlConnection(Environment.GetEnvironmentVariable("MYSQL_CONN_STRING"));
             con.Open();
             command = new MySqlCommand();
             command.Connection = con;

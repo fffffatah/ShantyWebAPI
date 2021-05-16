@@ -12,7 +12,7 @@ namespace ShantyWebAPI.Providers
         //Send email with attachments
         public void Send(string from, string fromUserName, string to, string toUserName, string subject, string plainText, string html)
         {
-            var apiKey = Environment.GetEnvironmentVariable("CUSTOMSENDGRID_API_KEY");
+            var apiKey = Environment.GetEnvironmentVariable("SENDGRID_API_KEY");
             var client = new SendGridClient(apiKey);
             var fromBuilder = new EmailAddress(from, fromUserName);
             var subjectBuilder = subject;
@@ -26,7 +26,7 @@ namespace ShantyWebAPI.Providers
         //Send email without attachments
         public void Send(string from, string fromUserName, string to, string toUserName, string subject, string plainText, string html, string attachmentFileName, byte[] attachmentContent)
         {
-            var apiKey = Environment.GetEnvironmentVariable("CUSTOMSENDGRID_API_KEY");
+            var apiKey = Environment.GetEnvironmentVariable("SENDGRID_API_KEY");
             var client = new SendGridClient(apiKey);
             var fromBuilder = new EmailAddress(from, fromUserName);
             var subjectBuilder = subject;
