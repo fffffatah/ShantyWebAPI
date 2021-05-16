@@ -7,5 +7,6 @@ namespace ShantyWebAPI.Providers
 {
     public class JwtAuthenticationProvider
     {
+
     }
 }
