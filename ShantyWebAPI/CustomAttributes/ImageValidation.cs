@@ -57,7 +57,7 @@ namespace ShantyWebAPI.CustomAttributes
             //SEND REQUEST TO COGNITIVE VISION
             RestRequest request = new RestRequest(Method.POST);
             request.AddHeader("Content-Type", "application/octet-stream");
-            request.AddHeader("Ocp-Apim-Subscription-Key", Environment.GetEnvironmentVariable("COGNITIVE_VISION_KEY"));
+            request.AddHeader("Ocp-Apim-Subscription-Key", Environment.GetEnvironmentVariable("CUSTOMCOGNITIVE_VISION_KEY"));
             
             long length = file.Length;
 
@@ -67,7 +67,7 @@ namespace ShantyWebAPI.CustomAttributes
 
             request.AddParameter("* /*", fileBytes, ParameterType.RequestBody);
 
-            var client = new RestClient(new Uri(Environment.GetEnvironmentVariable("COGNITIVE_VISION_API")));
+            var client = new RestClient(new Uri(Environment.GetEnvironmentVariable("CUSTOMCOGNITIVE_VISION_API")));
 
             var response = client.Execute(request);
             Root adult = JsonConvert.DeserializeObject<Root>(response.Content);

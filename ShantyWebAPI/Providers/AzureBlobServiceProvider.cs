@@ -29,7 +29,7 @@ namespace ShantyWebAPI.Providers
         {
             try
             {
-                BlobServiceClient blobServiceClient = new BlobServiceClient(Environment.GetEnvironmentVariable("BLOB_CONN_STRING"));
+                BlobServiceClient blobServiceClient = new BlobServiceClient(Environment.GetEnvironmentVariable("CUSTOMBLOB_CONN_STRING"));
                 string containerName = "shanty";
                 BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient(containerName);
                 BlobClient blobClient = containerClient.GetBlobClient(strFileName);
