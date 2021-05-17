@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ShantyWebAPI.Models.User;
 using System.Text;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ShantyWebAPI.Controllers.User
 {
@@ -77,8 +78,8 @@ namespace ShantyWebAPI.Controllers.User
             if(new UserDataAccess().RegisterLabel(labelGlobalModel))
             {
                 //TODO: send confirmation email
-                string baseUrl = $"{Request.Scheme}://{Request.Host.Value}/"+ "/api/User/email/verify";
-                return StatusCode(StatusCodes.Status200OK, "Label Account Created" + baseUrl);
+                string baseUrl = $"{Request.Scheme}://{Request.Host.Value}/"+ "/api/User/email/verify?id="+labelGlobalModel.Id;
+                return StatusCode(StatusCodes.Status200OK, "Label Account Created");
             }
             return StatusCode(StatusCodes.Status400BadRequest, "Label Account Creation Failed");
         }
@@ -111,6 +112,7 @@ namespace ShantyWebAPI.Controllers.User
         }
 
         //VERIFY EMAIL
+        [AllowAnonymous]
         [HttpGet]
         [Route("email/verify")]
         public void VerifyEmail(string id)
