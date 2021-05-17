@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ShantyWebAPI.Models.User;
+using ShantyWebAPI.Models;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
 
@@ -52,11 +53,10 @@ namespace ShantyWebAPI.Controllers.User
             listenerGlobalModel.Type = "listener";
             if(new UserDataAccess().RegisterListener(listenerGlobalModel))
             {
-                //TODO: send confirmation email
                 new UserDataAccess().SendVerificationEmail(listenerGlobalModel.FirstName + " " + listenerGlobalModel.LastName, listenerGlobalModel.Email, listenerGlobalModel.Id);
-                return StatusCode(StatusCodes.Status200OK, "Listener Account Created");
+                return Ok(new CustomResponseModel() { Code = "200", Phrase = "OK", Message = "Listener Account Created" });
             }
-            return StatusCode(StatusCodes.Status400BadRequest, "Listener Account Creation Failed");
+            return BadRequest(new CustomResponseModel() { Code = "400", Phrase = "BadRequest", Message = "Listener Account Creation Failed" });
         }
         [HttpPost]
         [Route("register/label")]
@@ -78,12 +78,11 @@ namespace ShantyWebAPI.Controllers.User
             labelGlobalModel.Type = "label";
             if(new UserDataAccess().RegisterLabel(labelGlobalModel))
             {
-                //TODO: send confirmation email
                 //string baseUrl = $"{Request.Scheme}://{Request.Host.Value}/"+ "/api/User/email/verify?id="+labelGlobalModel.Id;
                 new UserDataAccess().SendVerificationEmail(labelGlobalModel.LabelName, labelGlobalModel.Email, labelGlobalModel.Id);
-                return StatusCode(StatusCodes.Status200OK, "Label Account Created");
+                return Ok(new CustomResponseModel() { Code = "200", Phrase = "OK", Message = "Label Account Created" });
             }
-            return StatusCode(StatusCodes.Status400BadRequest, "Label Account Creation Failed");
+            return BadRequest(new CustomResponseModel() { Code = "400", Phrase = "BadRequest", Message = "Label Account Creation Failed" });
         }
         [HttpPost]
         [Route("register/artist")]
@@ -107,11 +106,10 @@ namespace ShantyWebAPI.Controllers.User
             artistGlobalModel.LabelId = artistRegistrationModel.LabelId;
             if(new UserDataAccess().RegisterArtist(artistGlobalModel))
             {
-                //TODO: send confirmation email
                 new UserDataAccess().SendVerificationEmail(artistGlobalModel.FirstName + " " + artistGlobalModel.LastName, artistGlobalModel.Email, artistGlobalModel.Id);
-                return StatusCode(StatusCodes.Status200OK, "Artist Account Created");
+                return Ok(new CustomResponseModel() { Code = "200", Phrase = "OK", Message = "Artist Account Created" });
             }
-            return StatusCode(StatusCodes.Status400BadRequest, "Artist Account Creation Failed");
+            return BadRequest(new CustomResponseModel() { Code = "400", Phrase = "BadRequest", Message = "Artist Account Creation Failed" });
         }
 
         //VERIFY EMAIL
@@ -121,9 +119,12 @@ namespace ShantyWebAPI.Controllers.User
         {
             if(new UserDataAccess().VerifyEmail(id))
             {
-                return StatusCode(StatusCodes.Status200OK, "Email Verified");
+                return Ok(new CustomResponseModel() { Code = "200", Phrase = "OK", Message = "Email Verified" });
             }
-            return StatusCode(StatusCodes.Status400BadRequest, "Email Verfication Failed");
+            return BadRequest(new CustomResponseModel() { Code = "400", Phrase = "BadRequest", Message = "Email Verfication Failed" });
         }
+
+        //LOGIN USERS
+        
     }
 }
