@@ -53,6 +53,7 @@ namespace ShantyWebAPI.Controllers.User
             if(new UserDataAccess().RegisterListener(listenerGlobalModel))
             {
                 //TODO: send confirmation email
+                new UserDataAccess().SendVerificationEmail(listenerGlobalModel.FirstName + " " + listenerGlobalModel.LastName, listenerGlobalModel.Email, listenerGlobalModel.Id);
                 return StatusCode(StatusCodes.Status200OK, "Listener Account Created");
             }
             return StatusCode(StatusCodes.Status400BadRequest, "Listener Account Creation Failed");
@@ -78,7 +79,8 @@ namespace ShantyWebAPI.Controllers.User
             if(new UserDataAccess().RegisterLabel(labelGlobalModel))
             {
                 //TODO: send confirmation email
-                string baseUrl = $"{Request.Scheme}://{Request.Host.Value}/"+ "/api/User/email/verify?id="+labelGlobalModel.Id;
+                //string baseUrl = $"{Request.Scheme}://{Request.Host.Value}/"+ "/api/User/email/verify?id="+labelGlobalModel.Id;
+                new UserDataAccess().SendVerificationEmail(labelGlobalModel.LabelName, labelGlobalModel.Email, labelGlobalModel.Id);
                 return StatusCode(StatusCodes.Status200OK, "Label Account Created");
             }
             return StatusCode(StatusCodes.Status400BadRequest, "Label Account Creation Failed");
@@ -106,18 +108,22 @@ namespace ShantyWebAPI.Controllers.User
             if(new UserDataAccess().RegisterArtist(artistGlobalModel))
             {
                 //TODO: send confirmation email
+                new UserDataAccess().SendVerificationEmail(artistGlobalModel.FirstName + " " + artistGlobalModel.LastName, artistGlobalModel.Email, artistGlobalModel.Id);
                 return StatusCode(StatusCodes.Status200OK, "Artist Account Created");
             }
             return StatusCode(StatusCodes.Status400BadRequest, "Artist Account Creation Failed");
         }
 
         //VERIFY EMAIL
-        [AllowAnonymous]
         [HttpGet]
         [Route("email/verify")]
-        public void VerifyEmail(string id)
+        public ActionResult VerifyEmail(string id)
         {
-
+            if(new UserDataAccess().VerifyEmail(id))
+            {
+                return StatusCode(StatusCodes.Status200OK, "Email Verified");
+            }
+            return StatusCode(StatusCodes.Status400BadRequest, "Email Verfication Failed");
         }
     }
 }
