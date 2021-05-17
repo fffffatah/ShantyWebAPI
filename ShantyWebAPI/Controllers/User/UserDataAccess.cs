@@ -159,7 +159,7 @@ namespace ShantyWebAPI.Controllers.User
         }
         public bool VerifyEmail(string id)
         {
-            dbConnection.CreateQuery("UPDATE users SET isemailverified=true WHERE id=" + id);
+            dbConnection.CreateQuery("UPDATE users SET isemailverified='true' WHERE id='" + id+"'");
             if ((dbConnection.DoNoQuery()) < 1)
             {
                 dbConnection.Dispose();

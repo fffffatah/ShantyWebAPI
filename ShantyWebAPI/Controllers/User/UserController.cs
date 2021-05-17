@@ -123,7 +123,7 @@ namespace ShantyWebAPI.Controllers.User
             {
                 return StatusCode(StatusCodes.Status200OK, "Email Verified");
             }
-            return StatusCode(StatusCodes.Status400BadRequest, "Email Verfication Failed");
+            return StatusCode(StatusCodes.Status400BadRequest, "Email Verfication Failed"+id);
         }
     }
 }
