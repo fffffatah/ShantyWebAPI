@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using MongoDB.Bson;
+using MySql.Data.MySqlClient;
 using ShantyWebAPI.Models.User;
 using ShantyWebAPI.Providers;
 
@@ -148,6 +149,31 @@ namespace ShantyWebAPI.Controllers.User
                 }
             }
             return (InsertArtistMysql() && InsertArtistMongo());
+        }
+
+        //USER LOGIN
+        public string LoginUser(string email, string pass)
+        {
+            dbConnection.CreateQuery("SELECT id,pass FROM users WHERE email='" + email + "'");
+            UserLoginResponseModel userLoginResponseModel = null;
+            string passFromDb = "";
+            MySqlDataReader reader = dbConnection.DoQuery();
+            while (reader.Read())
+            {
+                userLoginResponseModel = new UserLoginResponseModel();
+                userLoginResponseModel.Id = reader["id"].ToString();
+                passFromDb = reader["pass"].ToString();
+            }
+            dbConnection.Dispose();
+            dbConnection = null;
+            if (userLoginResponseModel != null)
+            {
+                if (BCrypt.Net.BCrypt.Verify(pass, passFromDb))
+                {
+                    return new JwtAuthenticationProvider().GenerateJsonWebToken(userLoginResponseModel);
+                }
+            }
+            return "";
         }
 
         //EMAIL VERIFICATION

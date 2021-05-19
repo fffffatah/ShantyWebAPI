@@ -125,6 +125,18 @@ namespace ShantyWebAPI.Controllers.User
         }
 
         //LOGIN USERS
-        
+        [HttpPost]
+        [Route("login")]
+        public ActionResult<UserLoginModel> Login([FromForm] UserLoginModel userLoginModel)
+        {
+            string jwtToken = new UserDataAccess().LoginUser(userLoginModel.Email, userLoginModel.Pass);
+            if (jwtToken != "")
+            {
+                return Ok(new { token = jwtToken });
+            }
+            return Unauthorized(new CustomResponseModel() { Code = "401", Phrase = "Unauthorized", Message = "Invalid Email/Password" });
+
+            //return BadRequest(new CustomResponseModel() { Code = "400", Phrase = "BadRequest", Message = "Error Logging In" });
+        }
     }
 }
