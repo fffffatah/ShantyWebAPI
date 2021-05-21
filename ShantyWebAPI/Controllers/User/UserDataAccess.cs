@@ -170,16 +170,17 @@ namespace ShantyWebAPI.Controllers.User
             dbConnection = null;
             if (userLoginResponseModel != null)
             {
-                if (isEmailVerified == "true")
+                if (BCrypt.Net.BCrypt.Verify(pass, passFromDb))
                 {
-                    if (BCrypt.Net.BCrypt.Verify(pass, passFromDb))
+                    if (isEmailVerified == "false")
                     {
-                        return new JwtAuthenticationProvider().GenerateJsonWebToken(userLoginResponseModel);
+                        return "Email Not Verified";
                     }
+                    return new JwtAuthenticationProvider().GenerateJsonWebToken(userLoginResponseModel);
                 }
                 else
                 {
-                    return "Email Not Verified";
+                    return "";
                 }
             }
             return "";
