@@ -130,7 +130,11 @@ namespace ShantyWebAPI.Controllers.User
         public ActionResult<UserLoginModel> Login([FromForm] UserLoginModel userLoginModel)
         {
             string jwtToken = new UserDataAccess().LoginUser(userLoginModel.Email, userLoginModel.Pass);
-            if (jwtToken != "")
+            if(jwtToken == "Email Not Verified")
+            {
+                return Unauthorized(new CustomResponseModel() { Code = "401", Phrase = "Unauthorized", Message = jwtToken });
+            }
+            else if (jwtToken != "")
             {
                 return Ok(new { token = jwtToken });
             }

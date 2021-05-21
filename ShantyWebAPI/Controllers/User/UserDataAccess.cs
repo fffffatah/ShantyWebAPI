@@ -154,23 +154,32 @@ namespace ShantyWebAPI.Controllers.User
         //USER LOGIN
         public string LoginUser(string email, string pass)
         {
-            dbConnection.CreateQuery("SELECT id,pass FROM users WHERE email='" + email + "'");
+            dbConnection.CreateQuery("SELECT id,pass,isemailverified FROM users WHERE email='" + email + "'");
             UserLoginResponseModel userLoginResponseModel = null;
             string passFromDb = "";
+            string isEmailVerified = "";
             MySqlDataReader reader = dbConnection.DoQuery();
             while (reader.Read())
             {
                 userLoginResponseModel = new UserLoginResponseModel();
                 userLoginResponseModel.Id = reader["id"].ToString();
                 passFromDb = reader["pass"].ToString();
+                isEmailVerified = reader["isemailverified"].ToString();
             }
             dbConnection.Dispose();
             dbConnection = null;
             if (userLoginResponseModel != null)
             {
-                if (BCrypt.Net.BCrypt.Verify(pass, passFromDb))
+                if (isEmailVerified == "true")
                 {
-                    return new JwtAuthenticationProvider().GenerateJsonWebToken(userLoginResponseModel);
+                    if (BCrypt.Net.BCrypt.Verify(pass, passFromDb))
+                    {
+                        return new JwtAuthenticationProvider().GenerateJsonWebToken(userLoginResponseModel);
+                    }
+                }
+                else
+                {
+                    return "Email Not Verified";
                 }
             }
             return "";
