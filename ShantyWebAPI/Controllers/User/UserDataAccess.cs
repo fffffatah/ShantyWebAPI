@@ -151,6 +151,9 @@ namespace ShantyWebAPI.Controllers.User
             return (InsertArtistMysql() && InsertArtistMongo());
         }
 
+        //RESET OR CHANGE PASSWORD
+        //TODO
+
         //USER LOGIN
         public string LoginUser(string email, string pass)
         {
@@ -189,7 +192,7 @@ namespace ShantyWebAPI.Controllers.User
         //EMAIL VERIFICATION
         public void SendVerificationEmail(string name, string email, string id)
         {
-            string url = "https://shantymusic.herokuapp.com/verify?userID=" + id; //YOUR FRONTEND URL, MAKE SURE TO PASS THE API SUBSCRIPTION KEY AS HEADER AS WELL
+            string url = Environment.GetEnvironmentVariable("EMAIL_VERIFICATION_URL") + id; //YOUR FRONTEND URL, MAKE SURE TO PASS THE API SUBSCRIPTION KEY AS HEADER AS WELL
             SendgridEmailProvider sendgridEmailProvider = new SendgridEmailProvider();
             sendgridEmailProvider.Send("no-reply@shanty.com", "Shanty", email, name, "Shanty - Verification", "Confirmation Email for Your Shanty Account", "<strong>Confirm Your Email Address: <u><a href=" + url + " target=\"_blank\">Click Here</a></u></strong>");
         }

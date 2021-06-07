@@ -124,6 +124,29 @@ namespace ShantyWebAPI.Controllers.User
             return BadRequest(new CustomResponseModel() { Code = "400", Phrase = "BadRequest", Message = "Email Verfication Failed" });
         }
 
+        //RESET OR CHANGE PASSWORD
+        [HttpPost]
+        [Route("change/password")]
+        public ActionResult<ChangePasswordModel> ChangePassword([FromForm] ChangePasswordModel changePasswordModel)
+        {
+            //todo
+            return null;
+        }
+        [HttpPost]
+        [Route("send/otp")]
+        public ActionResult<SendOtpModel> SendOtp([FromForm] SendOtpModel sendOtpModel)
+        {
+            //todo
+            return null;
+        }
+        [HttpPost]
+        [Route("reset/password")]
+        public ActionResult<ResetPasswordModel> ResetPassword([FromForm] ResetPasswordModel resetPasswordModel)
+        {
+            //todo
+            return null;
+        }
+
         //LOGIN USERS
         [HttpPost]
         [Route("login")]
@@ -139,8 +162,6 @@ namespace ShantyWebAPI.Controllers.User
                 return Ok(new { token = jwtToken });
             }
             return Unauthorized(new CustomResponseModel() { Code = "401", Phrase = "Unauthorized", Message = "Invalid Email/Password" });
-
-            //return BadRequest(new CustomResponseModel() { Code = "400", Phrase = "BadRequest", Message = "Error Logging In" });
         }
     }
 }

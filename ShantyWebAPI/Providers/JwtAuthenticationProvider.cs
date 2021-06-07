@@ -23,7 +23,7 @@ namespace ShantyWebAPI.Providers
             var token = new JwtSecurityToken(Environment.GetEnvironmentVariable("JWT_ISSUER"),
               Environment.GetEnvironmentVariable("JWT_ISSUER"),
               claims,
-              expires: DateTime.Now.AddMinutes(5),
+              expires: DateTime.Now.AddMinutes(600),
               signingCredentials: credentials);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
