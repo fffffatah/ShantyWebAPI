@@ -28,5 +28,23 @@ namespace ShantyWebAPI.Providers
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+
+        /*public string GetIdFromJwtToken(string jwtToken)
+        {
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT_KEY")));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+            var handler = new JwtSecurityTokenHandler();
+            var validations = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(key),
+                ValidateIssuer = true,
+                ValidIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER"),
+                ValidateAudience = true,
+                ValidAudience = Environment.GetEnvironmentVariable("JWT_ISSUER")
+            };
+            var claims = handler.ValidateToken(jwtToken, validations, out var tokenSecure);
+            return claims.Claims<JwtRegisteredClaimNames>;
+        }*/
     }
 }

@@ -1,13 +1,20 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using ShantyWebAPI.CustomAttributes;
 
 namespace ShantyWebAPI.Models.User
 {
     public class ChangePasswordModel
     {
+        [Required]
+        [FromHeader]
+        public string JwtToken { get; set; }
+        [Required]
+        [PasswordAuthentication(nameof(JwtToken))]
         public string CurrentPass { get; set; }
         [Required]
         [RegularExpression(@"^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$", ErrorMessage = "Password Must be 8 in Length and Must Contain Uppercase, Number and a Special Character")]
