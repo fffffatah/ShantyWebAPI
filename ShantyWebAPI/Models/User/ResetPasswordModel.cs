@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -8,6 +9,9 @@ namespace ShantyWebAPI.Models.User
 {
     public class ResetPasswordModel
     {
+        [Required]
+        [FromHeader]
+        public string JwtToken { get; set; }
         [Required]
         public string Otp { get; set; }
         [Required]

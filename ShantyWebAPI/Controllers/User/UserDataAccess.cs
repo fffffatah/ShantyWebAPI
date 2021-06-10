@@ -152,10 +152,31 @@ namespace ShantyWebAPI.Controllers.User
         }
 
         //RESET OR CHANGE PASSWORD
-        public void SendOtpForPassReset(string otp, string email)
+        public string SendOtpForPassReset(string otp, string email)
         {
             SendgridEmailProvider sendgridEmailProvider = new SendgridEmailProvider();
             sendgridEmailProvider.Send("no-reply@shanty.com", "Shanty", email, "User", "Shanty - OTP", "OTP for Password Reset", "<strong>OTP: " + otp + "</strong>");
+            dbConnection.CreateQuery("SELECT id,isemailverified FROM users WHERE email='" + email + "'");
+            UserLoginResponseModel userLoginResponseModel = null;
+            string isEmailVerified = "";
+            MySqlDataReader reader = dbConnection.DoQuery();
+            while (reader.Read())
+            {
+                userLoginResponseModel = new UserLoginResponseModel();
+                userLoginResponseModel.Id = reader["id"].ToString();
+                isEmailVerified = reader["isemailverified"].ToString();
+            }
+            dbConnection.Dispose();
+            dbConnection = null;
+            if (userLoginResponseModel != null)
+            {
+                if (isEmailVerified == "false")
+                {
+                    return "Email Not Verified";
+                }
+                return new JwtAuthenticationProvider().GenerateJsonWebToken(userLoginResponseModel);
+            }
+            return "";
         }
         //TODO
 

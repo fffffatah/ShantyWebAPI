@@ -78,7 +78,6 @@ namespace ShantyWebAPI.Controllers.User
             labelGlobalModel.Type = "label";
             if(new UserDataAccess().RegisterLabel(labelGlobalModel))
             {
-                //string baseUrl = $"{Request.Scheme}://{Request.Host.Value}/"+ "/api/User/email/verify?id="+labelGlobalModel.Id;
                 new UserDataAccess().SendVerificationEmail(labelGlobalModel.LabelName, labelGlobalModel.Email, labelGlobalModel.Id);
                 return Ok(new CustomResponseModel() { Code = "200", Phrase = "OK", Message = "Label Account Created" });
             }
@@ -136,8 +135,16 @@ namespace ShantyWebAPI.Controllers.User
         [Route("send/otp")]
         public ActionResult<SendOtpModel> SendOtp([FromForm] SendOtpModel sendOtpModel)
         {
-            new UserDataAccess().SendOtpForPassReset(sendOtpModel.Otp, sendOtpModel.Email);
-            return Ok(new CustomResponseModel() { Code = "200", Phrase = "OK", Message = "OTP Sent" });
+            string jwtToken = new UserDataAccess().SendOtpForPassReset(sendOtpModel.Otp, sendOtpModel.Email);
+            if (jwtToken == "Email Not Verified")
+            {
+                return Unauthorized(new CustomResponseModel() { Code = "401", Phrase = "Unauthorized", Message = jwtToken });
+            }
+            else if(jwtToken != "")
+            {
+                return Ok(new { message = "OTP Sent", token = jwtToken });
+            }
+            return Unauthorized(new CustomResponseModel() { Code = "401", Phrase = "Unauthorized", Message = "Unauthorized" });
         }
         [HttpPost]
         [Route("reset/password")]
@@ -159,7 +166,7 @@ namespace ShantyWebAPI.Controllers.User
             }
             else if (jwtToken != "")
             {
-                return Ok(new { token = jwtToken });
+                return Ok(new { message = "Logged in Successfully", token = jwtToken });
             }
             return Unauthorized(new CustomResponseModel() { Code = "401", Phrase = "Unauthorized", Message = "Invalid Email/Password" });
         }
