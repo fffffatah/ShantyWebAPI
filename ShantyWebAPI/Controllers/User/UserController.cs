@@ -136,8 +136,8 @@ namespace ShantyWebAPI.Controllers.User
         [Route("send/otp")]
         public ActionResult<SendOtpModel> SendOtp([FromForm] SendOtpModel sendOtpModel)
         {
-            //todo
-            return null;
+            new UserDataAccess().SendOtpForPassReset(sendOtpModel.Otp, sendOtpModel.Email);
+            return Ok(new CustomResponseModel() { Code = "200", Phrase = "OK", Message = "OTP Sent" });
         }
         [HttpPost]
         [Route("reset/password")]

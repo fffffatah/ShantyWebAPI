@@ -27,7 +27,7 @@ namespace ShantyWebAPI.CustomAttributes
             }
             if (value != null)
             {
-                if (IsEmailTaken(value.ToString()))
+                if (!IsEmailTaken(value.ToString()))
                 {
                     return new ValidationResult(ErrorMessage = "Email Not Found");
                 }

@@ -152,6 +152,11 @@ namespace ShantyWebAPI.Controllers.User
         }
 
         //RESET OR CHANGE PASSWORD
+        public void SendOtpForPassReset(string otp, string email)
+        {
+            SendgridEmailProvider sendgridEmailProvider = new SendgridEmailProvider();
+            sendgridEmailProvider.Send("no-reply@shanty.com", "Shanty", email, "User", "Shanty - OTP", "OTP for Password Reset", "<strong>OTP: " + otp + "</strong>");
+        }
         //TODO
 
         //USER LOGIN
