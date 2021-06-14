@@ -140,6 +140,10 @@ namespace ShantyWebAPI.Controllers.User
             {
                 return Unauthorized(new CustomResponseModel() { Code = "401", Phrase = "Unauthorized", Message = jwtToken });
             }
+            else if (jwtToken == "Email Not Found")
+            {
+                return NotFound(new CustomResponseModel() { Code = "404", Phrase = "NotFound", Message = jwtToken });
+            }
             else if(jwtToken != "")
             {
                 return Ok(new { message = "OTP Sent", token = jwtToken });

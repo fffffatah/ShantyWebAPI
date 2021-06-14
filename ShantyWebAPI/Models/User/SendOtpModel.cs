@@ -10,10 +10,9 @@ namespace ShantyWebAPI.Models.User
     public class SendOtpModel
     {
         [Required]
-        [EmailOtpValidation]
         public string Email { get; set; }
         [Required]
-        [StringLength(6, MinimumLength = 6, ErrorMessage = "Otp must be 10 characters")]
+        [StringLength(6, MinimumLength = 6, ErrorMessage = "Otp must be 6 characters")]
         public string Otp { get; set; }
     }
 }

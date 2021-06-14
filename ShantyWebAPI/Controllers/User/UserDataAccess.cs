@@ -154,6 +154,23 @@ namespace ShantyWebAPI.Controllers.User
         //RESET OR CHANGE PASSWORD
         public string SendOtpForPassReset(string otp, string email)
         {
+            bool IsEmailTaken(string email)
+            {
+                MysqlConnectionProvider dbConnection = new MysqlConnectionProvider();
+                dbConnection.CreateQuery("SELECT COUNT(*) AS \"COUNTER\" FROM users WHERE email='" + email + "'");
+                MySqlDataReader reader = dbConnection.DoQuery();
+                string counter = "";
+                while (reader.Read())
+                {
+                    counter = reader["COUNTER"].ToString();
+                }
+                dbConnection.Dispose();
+                return !counter.Equals("0");
+            }
+            if (!IsEmailTaken(email))
+                {
+                return "Email Not Found";
+            }
             SendgridEmailProvider sendgridEmailProvider = new SendgridEmailProvider();
             sendgridEmailProvider.Send("no-reply@shanty.com", "Shanty", email, "User", "Shanty - OTP", "OTP for Password Reset", "<strong>OTP: " + otp + "</strong>");
             dbConnection.CreateQuery("SELECT id,isemailverified FROM users WHERE email='" + email + "'");
