@@ -30,6 +30,10 @@ namespace ShantyWebAPI.Controllers.User
             AzureBlobServiceProvider azureBlob = new AzureBlobServiceProvider();
             return azureBlob.UploadFileToBlob(imageName, labelIcon);
         }
+        public string JwtTokenValidation(string jwt)
+        {
+            return new JwtAuthenticationProvider().ValidateToken(jwt);
+        }
 
         //LISTENER REGISTRATION
         public bool RegisterListener(ListenerGlobalModel listener)
@@ -194,6 +198,19 @@ namespace ShantyWebAPI.Controllers.User
                 return new JwtAuthenticationProvider().GenerateJsonWebToken(userLoginResponseModel);
             }
             return "";
+        }
+
+        public bool ResetChangePassword(string id, string pass)
+        {
+            MysqlConnectionProvider dbConnection = new MysqlConnectionProvider();
+            dbConnection.CreateQuery("UPDATE users SET pass='" + pass + "' WHERE id='" + id + "'");
+            if ((dbConnection.DoNoQuery()) < 1)
+            {
+                dbConnection.Dispose();
+                return false;
+            }
+            dbConnection.Dispose();
+            return true;
         }
         //TODO
 

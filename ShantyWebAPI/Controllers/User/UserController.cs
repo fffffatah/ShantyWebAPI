@@ -128,8 +128,17 @@ namespace ShantyWebAPI.Controllers.User
         [Route("change/password")]
         public ActionResult<ChangePasswordModel> ChangePassword([FromForm] ChangePasswordModel changePasswordModel)
         {
-            //todo
-            return null;
+            changePasswordModel.NewPass = BCrypt.Net.BCrypt.HashPassword(changePasswordModel.NewPass, BCrypt.Net.BCrypt.GenerateSalt());
+            string id = new UserDataAccess().JwtTokenValidation(changePasswordModel.JwtToken);
+            if (id == "")
+            {
+                return Unauthorized(new CustomResponseModel() { Code = "401", Phrase = "Unauthorized", Message = "Invalid Jwt Token" });
+            }
+            if (new UserDataAccess().ResetChangePassword(id, changePasswordModel.NewPass))
+            {
+                return Ok(new CustomResponseModel() { Code = "200", Phrase = "OK", Message = "Password Changed Successfully" });
+            }
+            return BadRequest(new CustomResponseModel() { Code = "400", Phrase = "BadRequest", Message = "Couldn't Change Password" });
         }
         [HttpPost]
         [Route("send/otp")]
@@ -154,8 +163,17 @@ namespace ShantyWebAPI.Controllers.User
         [Route("reset/password")]
         public ActionResult<ResetPasswordModel> ResetPassword([FromForm] ResetPasswordModel resetPasswordModel)
         {
-            //todo
-            return null;
+            resetPasswordModel.NewPass = BCrypt.Net.BCrypt.HashPassword(resetPasswordModel.NewPass, BCrypt.Net.BCrypt.GenerateSalt());
+            string id = new UserDataAccess().JwtTokenValidation(resetPasswordModel.JwtToken);
+            if (id == "")
+            {
+                return Unauthorized(new CustomResponseModel() { Code = "401", Phrase = "Unauthorized", Message = "Invalid Jwt Token" });
+            }
+            if(new UserDataAccess().ResetChangePassword(id, resetPasswordModel.NewPass))
+            {
+                return Ok(new CustomResponseModel() { Code = "200", Phrase = "OK", Message = "Password Reset Successful" });
+            }
+            return BadRequest(new CustomResponseModel() { Code = "400", Phrase = "BadRequest", Message = "Password Reset Failed"});
         }
 
         //LOGIN USERS

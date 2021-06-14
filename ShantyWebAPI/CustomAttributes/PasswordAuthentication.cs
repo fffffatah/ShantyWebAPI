@@ -20,17 +20,27 @@ namespace ShantyWebAPI.CustomAttributes
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
             var jwt =
-            Convert.ToBoolean(
+            Convert.ToString(
                 validationContext.ObjectInstance
                     .GetType()
                     .GetProperty(JwtToken)
                     .GetValue(validationContext.ObjectInstance)
                 );
+            string id = new JwtAuthenticationProvider().ValidateToken(jwt);
             bool CheckPassword(string pass)
             {
-                //todo
-                return false;
+                MysqlConnectionProvider dbConnection = new MysqlConnectionProvider();
+                dbConnection.CreateQuery("SELECT pass FROM users WHERE id='" + id + "'");
+                MySqlDataReader reader = dbConnection.DoQuery();
+                string dbPass = "";
+                while (reader.Read())
+                {
+                    dbPass = reader["pass"].ToString();
+                }
+                dbConnection.Dispose();
+                return BCrypt.Net.BCrypt.Verify(pass, dbPass);
             }
+            if (id == "") return new ValidationResult(ErrorMessage = "Verification Failed"); ;
             if (value != null)
             {
                 if (!CheckPassword(value.ToString()))
