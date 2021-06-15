@@ -32,10 +32,6 @@ namespace ShantyWebAPI.CustomAttributes
                     return new ValidationResult(ErrorMessage = "Email Taken");
                 }
             }
-            else
-            {
-                return new ValidationResult(ErrorMessage = "Email Required");
-            }
             return ValidationResult.Success;
         }
     }

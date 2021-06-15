@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using MongoDB.Bson;
+using MongoDB.Driver;
 using MySql.Data.MySqlClient;
 using ShantyWebAPI.Models.User;
 using ShantyWebAPI.Providers;
@@ -212,7 +213,30 @@ namespace ShantyWebAPI.Controllers.User
             dbConnection.Dispose();
             return true;
         }
-        //TODO
+       
+        //UPDATE USER DATA
+        public bool UpdateArtist(ArtistUpdateModel artistUpdateModel)
+        {
+            //TODO
+            /*{ "ProfileImageUrl", artist.ProfileImageUrl },
+                        { "FirstName", artist.FirstName },
+                        { "LastName", artist.LastName },
+                        { "Dob", artist.Dob },*/
+            var collection = new MongodbConnectionProvider().GeShantyDatabase().GetCollection<BsonDocument>("artists");
+            var filter = Builders<BsonDocument>.Filter.Eq("Id", artistUpdateModel.Id);
+            var update = Builders<BsonDocument>.Update.Set("ProfileImageUrl", artistUpdateModel.ProfileImageUrl);
+            return false;
+        }
+        public bool UpdateListener(ArtistUpdateModel artistUpdateModel)
+        {
+            //todo
+            return false;
+        }
+        public bool UpdateLabel(ArtistUpdateModel artistUpdateModel)
+        {
+            //todo
+            return false;
+        }
 
         //USER LOGIN
         public string LoginUser(string email, string pass)

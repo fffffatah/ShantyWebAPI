@@ -52,7 +52,7 @@ namespace ShantyWebAPI.CustomAttributes
             }
             else
             {
-                return new ValidationResult(ErrorMessage = "Profile Image/Icon Required");
+                return ValidationResult.Success;
             }
             //SEND REQUEST TO COGNITIVE VISION
             RestRequest request = new RestRequest(Method.POST);

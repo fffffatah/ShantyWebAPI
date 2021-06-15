@@ -32,10 +32,6 @@ namespace ShantyWebAPI.CustomAttributes
                     return new ValidationResult(ErrorMessage = "Phone Taken");
                 }
             }
-            else
-            {
-                return new ValidationResult(ErrorMessage = "Phone Required");
-            }
             return ValidationResult.Success;
         }
     }

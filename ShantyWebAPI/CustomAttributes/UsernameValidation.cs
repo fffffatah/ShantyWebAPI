@@ -32,10 +32,6 @@ namespace ShantyWebAPI.CustomAttributes
                     return new ValidationResult(ErrorMessage = "Username Taken");
                 }
             }
-            else
-            {
-                return new ValidationResult(ErrorMessage = "Username Required");
-            }
             return ValidationResult.Success;
         }
     }

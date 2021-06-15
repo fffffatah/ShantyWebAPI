@@ -8,6 +8,7 @@ using ShantyWebAPI.Models.User;
 using ShantyWebAPI.Models;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
+using System.ComponentModel.DataAnnotations;
 
 namespace ShantyWebAPI.Controllers.User
 {
@@ -174,6 +175,44 @@ namespace ShantyWebAPI.Controllers.User
                 return Ok(new CustomResponseModel() { Code = "200", Phrase = "OK", Message = "Password Reset Successful" });
             }
             return BadRequest(new CustomResponseModel() { Code = "400", Phrase = "BadRequest", Message = "Password Reset Failed"});
+        }
+
+        //UPDATE USER DATA
+        [HttpPost]
+        [Route("update/artist")]
+        public ActionResult<ArtistUpdateModel> UpdateArtist([FromForm] ArtistUpdateModel artistUpdateModel)
+        {
+            artistUpdateModel.Id = new UserDataAccess().JwtTokenValidation(artistUpdateModel.JwtToken);
+            if (artistUpdateModel.Id == "")
+            {
+                return Unauthorized(new CustomResponseModel() { Code = "401", Phrase = "Unauthorized", Message = "Invalid Jwt Token" });
+            }
+            //todo
+            return BadRequest(new CustomResponseModel() { Code = "400", Phrase = "BadRequest", Message = "Artist Update Failed" });
+        }
+        [HttpPost]
+        [Route("update/listener")]
+        public ActionResult<ArtistUpdateModel> UpdateListener([FromForm] ListenerUpdateModel listenerUpdateModel)
+        {
+            listenerUpdateModel.Id = new UserDataAccess().JwtTokenValidation(listenerUpdateModel.JwtToken);
+            if (listenerUpdateModel.Id == "")
+            {
+                return Unauthorized(new CustomResponseModel() { Code = "401", Phrase = "Unauthorized", Message = "Invalid Jwt Token" });
+            }
+            //todo
+            return BadRequest(new CustomResponseModel() { Code = "400", Phrase = "BadRequest", Message = "Listener Update Failed" });
+        }
+        [HttpPost]
+        [Route("update/label")]
+        public ActionResult<ArtistUpdateModel> UpdateLabel([FromForm] LabelUpdateModel labelUpdateModel)
+        {
+            labelUpdateModel.Id = new UserDataAccess().JwtTokenValidation(labelUpdateModel.JwtToken);
+            if (labelUpdateModel.Id == "")
+            {
+                return Unauthorized(new CustomResponseModel() { Code = "401", Phrase = "Unauthorized", Message = "Invalid Jwt Token" });
+            }
+            //todo
+            return BadRequest(new CustomResponseModel() { Code = "400", Phrase = "BadRequest", Message = "Label Update Failed" });
         }
 
         //LOGIN USERS

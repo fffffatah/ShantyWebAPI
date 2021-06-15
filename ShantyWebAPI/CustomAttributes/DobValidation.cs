@@ -29,10 +29,6 @@ namespace ShantyWebAPI.CustomAttributes
                     return new ValidationResult("User Must be At Least 13 Years Old ");
                 }
             }
-            else
-            {
-                return new ValidationResult("Dob Required");
-            }
             return ValidationResult.Success;
         }
     }
