@@ -227,15 +227,32 @@ namespace ShantyWebAPI.Controllers.User
             var update = Builders<BsonDocument>.Update.Set("ProfileImageUrl", artistUpdateModel.ProfileImageUrl);
             return false;
         }
-        public bool UpdateListener(ArtistUpdateModel artistUpdateModel)
+        public bool UpdateListener(ListenerUpdateModel listenerUpdateModel)
         {
             //todo
             return false;
         }
-        public bool UpdateLabel(ArtistUpdateModel artistUpdateModel)
+        public bool UpdateLabel(LabelUpdateModel labelUpdateModel)
         {
             //todo
             return false;
+        }
+
+        //GET USER DATA
+        public ArtistGetInfoModel GetArtistInfo(string id)
+        {
+            //todo
+            return null;
+        }
+        public ListenerGetInfoModel GetListenerInfo(string id)
+        {
+            //todo
+            return null;
+        }
+        public LabelGetInfoModel GetLabelInfo(string id)
+        {
+            //todo
+            return null;
         }
 
         //USER LOGIN

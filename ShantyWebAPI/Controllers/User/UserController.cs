@@ -187,7 +187,10 @@ namespace ShantyWebAPI.Controllers.User
             {
                 return Unauthorized(new CustomResponseModel() { Code = "401", Phrase = "Unauthorized", Message = "Invalid Jwt Token" });
             }
-            //todo
+            if(new UserDataAccess().UpdateArtist(artistUpdateModel))
+            {
+                return Ok(new CustomResponseModel() { Code = "200", Phrase = "OK", Message = "Artist Update Successful" });
+            }
             return BadRequest(new CustomResponseModel() { Code = "400", Phrase = "BadRequest", Message = "Artist Update Failed" });
         }
         [HttpPost]
@@ -199,7 +202,10 @@ namespace ShantyWebAPI.Controllers.User
             {
                 return Unauthorized(new CustomResponseModel() { Code = "401", Phrase = "Unauthorized", Message = "Invalid Jwt Token" });
             }
-            //todo
+            if (new UserDataAccess().UpdateListener(listenerUpdateModel))
+            {
+                return Ok(new CustomResponseModel() { Code = "200", Phrase = "OK", Message = "Listener Update Successful" });
+            }
             return BadRequest(new CustomResponseModel() { Code = "400", Phrase = "BadRequest", Message = "Listener Update Failed" });
         }
         [HttpPost]
@@ -211,8 +217,52 @@ namespace ShantyWebAPI.Controllers.User
             {
                 return Unauthorized(new CustomResponseModel() { Code = "401", Phrase = "Unauthorized", Message = "Invalid Jwt Token" });
             }
-            //todo
+            if (new UserDataAccess().UpdateLabel(labelUpdateModel))
+            {
+                return Ok(new CustomResponseModel() { Code = "200", Phrase = "OK", Message = "Label Update Successful" });
+            }
             return BadRequest(new CustomResponseModel() { Code = "400", Phrase = "BadRequest", Message = "Label Update Failed" });
+        }
+
+        //GET USERS
+        [HttpGet]
+        [Route("get/artist")]
+        public ActionResult<ArtistGetInfoModel> GetArtistInfo([FromHeader][Required] string jwtToken)
+        {
+            string id = new UserDataAccess().JwtTokenValidation(jwtToken);
+            if (id == "")
+            {
+                return Unauthorized(new CustomResponseModel() { Code = "401", Phrase = "Unauthorized", Message = "Invalid Jwt Token" });
+            }
+            ArtistGetInfoModel artistGetInfoModel = new UserDataAccess().GetArtistInfo(id);
+            //todo
+            return BadRequest(new CustomResponseModel() { Code = "400", Phrase = "BadRequest", Message = "Failed To Get Artist" });
+        }
+        [HttpGet]
+        [Route("get/listener")]
+        public ActionResult<ListenerGetInfoModel> GetListenerInfo([FromHeader][Required] string jwtToken)
+        {
+            string id = new UserDataAccess().JwtTokenValidation(jwtToken);
+            if (id == "")
+            {
+                return Unauthorized(new CustomResponseModel() { Code = "401", Phrase = "Unauthorized", Message = "Invalid Jwt Token" });
+            }
+            ListenerGetInfoModel listenerGetInfoModel = new UserDataAccess().GetListenerInfo(id);
+            //todo
+            return BadRequest(new CustomResponseModel() { Code = "400", Phrase = "BadRequest", Message = "Failed To Get Listener" });
+        }
+        [HttpGet]
+        [Route("get/label")]
+        public ActionResult<LabelGetInfoModel> GetLabelInfo([FromHeader][Required] string jwtToken)
+        {
+            string id = new UserDataAccess().JwtTokenValidation(jwtToken);
+            if (id == "")
+            {
+                return Unauthorized(new CustomResponseModel() { Code = "401", Phrase = "Unauthorized", Message = "Invalid Jwt Token" });
+            }
+            LabelGetInfoModel labelGetInfoModel = new UserDataAccess().GetLabelInfo(id);
+            //todo
+            return BadRequest(new CustomResponseModel() { Code = "400", Phrase = "BadRequest", Message = "Failed To Get Label" });
         }
 
         //LOGIN USERS
