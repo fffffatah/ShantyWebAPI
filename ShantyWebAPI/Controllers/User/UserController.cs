@@ -115,7 +115,7 @@ namespace ShantyWebAPI.Controllers.User
         //VERIFY EMAIL
         [HttpGet]
         [Route("email/verify")]
-        public ActionResult<CustomResponseModel> VerifyEmail(string id)
+        public ActionResult<CustomResponseModel> VerifyEmail([Required] string id)
         {
             if(new UserDataAccess().VerifyEmail(id))
             {

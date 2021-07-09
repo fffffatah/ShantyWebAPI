@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using ShantyWebAPI.Models.Album;
 using ShantyWebAPI.Models;
 using System.Text;
+using System.ComponentModel.DataAnnotations;
 
 namespace ShantyWebAPI.Controllers.Album
 {
@@ -67,7 +68,7 @@ namespace ShantyWebAPI.Controllers.Album
         //UPDATE ALBUM
         [HttpPost]
         [Route("update/album")]
-        public ActionResult<CustomResponseModel> UpdateAlbum([FromForm]AlbumUpdateModel albumUpdateModel, string albumId)
+        public ActionResult<CustomResponseModel> UpdateAlbum([FromForm]AlbumUpdateModel albumUpdateModel, [Required] string albumId)
         {
             albumUpdateModel.LabelId = new AlbumDataAccess().JwtTokenValidation(albumUpdateModel.JwtToken);
             albumUpdateModel.Id = albumId;
@@ -88,7 +89,7 @@ namespace ShantyWebAPI.Controllers.Album
         //GET ALBUM
         [HttpGet]
         [Route("get/album")]
-        public ActionResult<AlbumGetModel> GetAlbum([FromHeader]string jwtToken, string albumId)
+        public ActionResult<AlbumGetModel> GetAlbum([FromHeader][Required] string jwtToken, [Required] string albumId)
         {
             string userId = new AlbumDataAccess().JwtTokenValidation(jwtToken);
             if (userId == "")
@@ -101,6 +102,26 @@ namespace ShantyWebAPI.Controllers.Album
                 return albumGetModel;
             }
             return BadRequest(new CustomResponseModel() { Code = "400", Phrase = "BadRequest", Message = "Could Not Get Album" });
+        }
+
+        //DELETE ALBUM
+        [HttpGet]
+        [Route("delete/album")]
+        public ActionResult<AlbumGetModel> DeleteAlbum([FromHeader][Required] string jwtToken, [Required] string albumId)
+        {
+            string labelId = new AlbumDataAccess().JwtTokenValidation(jwtToken);
+            if (labelId == "")
+            {
+                return Unauthorized(new CustomResponseModel() { Code = "401", Phrase = "Unauthorized", Message = "Invalid Jwt Token" });
+            }
+            if (new AlbumDataAccess().IsLabel(labelId))
+            {
+                if (new AlbumDataAccess().DeleteAlbum(labelId,albumId))
+                {
+                    return Ok(new CustomResponseModel() { Code = "200", Phrase = "OK", Message = "Album Delete" });
+                }
+            }
+            return BadRequest(new CustomResponseModel() { Code = "400", Phrase = "BadRequest", Message = "Could Not Delete Album" });
         }
     }
 }
