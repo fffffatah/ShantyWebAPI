@@ -14,6 +14,8 @@ namespace ShantyWebAPI.Models.User
         public string Username { get; set; }
         public string Email { get; set; }
         public string Phone { get; set; }
+        [BsonElement("ArtistId")]
+        public string ArtistId { get; set; }
         [BsonElement("ProfileImageUrl")]
         public string ProfileImageUrl { get; set; }
         [BsonElement("FirstName")]
