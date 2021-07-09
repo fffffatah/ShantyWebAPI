@@ -35,7 +35,7 @@ namespace ShantyWebAPI.Providers
                 BlobClient blobClient = containerClient.GetBlobClient(strFileName);
                 using (var stream = file.OpenReadStream())
                 {
-                    await blobClient.UploadAsync(stream);
+                    await blobClient.UploadAsync(stream, true);
                 }
                 return blobClient.Uri.AbsoluteUri;
             }

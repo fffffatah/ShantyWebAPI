@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using ShantyWebAPI.Models.Album;
 using MongoDB.Bson;
 using MySql.Data.MySqlClient;
+using MongoDB.Driver;
+using MongoDB.Bson.Serialization;
 
 namespace ShantyWebAPI.Controllers.Album
 {
@@ -50,12 +52,13 @@ namespace ShantyWebAPI.Controllers.Album
                 var collection = new MongodbConnectionProvider().GeShantyDatabase().GetCollection<BsonDocument>("albums");
                 var document = new BsonDocument
                     {
-                        { "Id", albumGlobalModel.Id },
+                        { "AlbumId", albumGlobalModel.Id },
                         { "AlbumName", albumGlobalModel.AlbumName },
                         { "CoverImageUrl", albumGlobalModel.CoverImageUrl },
                         { "LabelId", albumGlobalModel.LabelId },
                         { "ArtistId", albumGlobalModel.ArtistId },
-                        { "Year", albumGlobalModel.Year }
+                        { "Year", albumGlobalModel.Year },
+                        { "Genre", albumGlobalModel.Genre }
                     };
                 collection.InsertOne(document);
                 return true;
@@ -64,6 +67,45 @@ namespace ShantyWebAPI.Controllers.Album
             {
                 return false;
             }
+        }
+        //UPDATE ALBUM
+        public bool UpdateAlbum(AlbumUpdateModel albumUpdateModel)
+        {
+            albumUpdateModel.CoverImageUrl = UploadAlbumCoverImage(albumUpdateModel.CoverImage, albumUpdateModel.Id);
+            var collection = new MongodbConnectionProvider().GeShantyDatabase().GetCollection<BsonDocument>("albums");
+            var filter = Builders<BsonDocument>.Filter.Eq("AlbumId", albumUpdateModel.Id) & Builders<BsonDocument>.Filter.Eq("LabelId", albumUpdateModel.LabelId);
+            var update = Builders<BsonDocument>.Update.Set("CoverImageUrl", albumUpdateModel.CoverImageUrl)
+                .Set("AlbumName", albumUpdateModel.AlbumName)
+                .Set("Year", albumUpdateModel.Year)
+                .Set("ArtistId", albumUpdateModel.ArtistId)
+                .Set("Genre", albumUpdateModel.Genre);
+            if (collection.UpdateOne(filter, update).ModifiedCount > 0)
+            {
+                return true;
+            }
+            return false;
+        }
+        //GET ALBUM
+        public AlbumGetModel GetAlbum(string id)
+        {
+            AlbumGetModel albumGetModel = null;
+            var collection = new MongodbConnectionProvider().GeShantyDatabase().GetCollection<BsonDocument>("albums");
+            var builder = Builders<BsonDocument>.Filter;
+            var filter = builder.Eq("AlbumId", id);
+            var result = collection.Find(filter).FirstOrDefault();
+            if (result != null)
+            {
+                albumGetModel = new AlbumGetModel();
+                AlbumGetModel res = BsonSerializer.Deserialize<AlbumGetModel>(result);
+                albumGetModel.AlbumId = res.AlbumId;
+                albumGetModel.AlbumName = res.AlbumName;
+                albumGetModel.CoverImageUrl = res.CoverImageUrl;
+                albumGetModel.Year = res.Year;
+                albumGetModel.Genre = res.Genre;
+                albumGetModel.ArtistId = res.ArtistId;
+                albumGetModel.LabelId = res.LabelId;
+            }
+            return albumGetModel;
         }
     }
 }

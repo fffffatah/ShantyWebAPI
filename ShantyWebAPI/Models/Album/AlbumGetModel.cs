@@ -1,15 +1,17 @@
-﻿using Microsoft.AspNetCore.Http;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Text.Json.Serialization;
+using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson;
 
 namespace ShantyWebAPI.Models.Album
 {
-    public class AlbumGlobalModel
+    [BsonIgnoreExtraElements]
+    public class AlbumGetModel
     {
-        public string Id { get; set; }
-        public IFormFile CoverImage { get; set; }
+        public string AlbumId { get; set; }
         public string CoverImageUrl { get; set; }
         public string AlbumName { get; set; }
         public string Year { get; set; }

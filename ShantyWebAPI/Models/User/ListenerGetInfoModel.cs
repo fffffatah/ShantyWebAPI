@@ -7,6 +7,7 @@ namespace ShantyWebAPI.Models.User
 {
     public class ListenerGetInfoModel
     {
+        public string LabelId { get; set; }
         public string ProfileImageUrl { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
