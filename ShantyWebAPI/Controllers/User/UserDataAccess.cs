@@ -220,24 +220,48 @@ namespace ShantyWebAPI.Controllers.User
         //UPDATE USER DATA
         public bool UpdateArtist(ArtistUpdateModel artistUpdateModel)
         {
-            //TODO
-            /*{ "ProfileImageUrl", artist.ProfileImageUrl },
-                        { "FirstName", artist.FirstName },
-                        { "LastName", artist.LastName },
-                        { "Dob", artist.Dob },*/
+            artistUpdateModel.ProfileImageUrl = UploadProfileImage(artistUpdateModel.ProfileImage, artistUpdateModel.Id);
             var collection = new MongodbConnectionProvider().GeShantyDatabase().GetCollection<BsonDocument>("artists");
             var filter = Builders<BsonDocument>.Filter.Eq("Id", artistUpdateModel.Id);
-            var update = Builders<BsonDocument>.Update.Set("ProfileImageUrl", artistUpdateModel.ProfileImageUrl);
+            var update = Builders<BsonDocument>.Update.Set("ProfileImageUrl", artistUpdateModel.ProfileImageUrl)
+                .Set("FirstName", artistUpdateModel.FirstName)
+                .Set("LastName", artistUpdateModel.LastName)
+                .Set("Dob", artistUpdateModel.Dob)
+                .Set("Region", artistUpdateModel.Region);
+            if(collection.UpdateOne(filter, update).ModifiedCount > 0)
+            {
+                return true;
+            }
             return false;
         }
         public bool UpdateListener(ListenerUpdateModel listenerUpdateModel)
         {
-            //todo
+            listenerUpdateModel.ProfileImageUrl = UploadProfileImage(listenerUpdateModel.ProfileImage, listenerUpdateModel.Id);
+            var collection = new MongodbConnectionProvider().GeShantyDatabase().GetCollection<BsonDocument>("listeners");
+            var filter = Builders<BsonDocument>.Filter.Eq("Id", listenerUpdateModel.Id);
+            var update = Builders<BsonDocument>.Update.Set("ProfileImageUrl", listenerUpdateModel.ProfileImageUrl)
+                .Set("FirstName", listenerUpdateModel.FirstName)
+                .Set("LastName", listenerUpdateModel.LastName)
+                .Set("Dob", listenerUpdateModel.Dob)
+                .Set("Region", listenerUpdateModel.Region);
+            if (collection.UpdateOne(filter, update).ModifiedCount > 0)
+            {
+                return true;
+            }
             return false;
         }
         public bool UpdateLabel(LabelUpdateModel labelUpdateModel)
         {
-            //todo
+            labelUpdateModel.LabelIconUrl = UploadLabelIcon(labelUpdateModel.LabelIcon, labelUpdateModel.Id);
+            var collection = new MongodbConnectionProvider().GeShantyDatabase().GetCollection<BsonDocument>("labels");
+            var filter = Builders<BsonDocument>.Filter.Eq("Id", labelUpdateModel.Id);
+            var update = Builders<BsonDocument>.Update.Set("LabelIconUrl", labelUpdateModel.LabelIconUrl)
+                .Set("LabelName", labelUpdateModel.LabelName)
+                .Set("EstDate", labelUpdateModel.EstDate);
+            if (collection.UpdateOne(filter, update).ModifiedCount > 0)
+            {
+                return true;
+            }
             return false;
         }
 
