@@ -107,5 +107,16 @@ namespace ShantyWebAPI.Controllers.Album
             }
             return albumGetModel;
         }
+        //DELETE ALBUM
+        public bool DeleteAlbum(string labelId, string albumId)
+        {
+            var collection = new MongodbConnectionProvider().GeShantyDatabase().GetCollection<BsonDocument>("albums");
+            var deleteFilter = Builders<BsonDocument>.Filter.Eq("AlbumId", albumId) & Builders<BsonDocument>.Filter.Eq("LabelId", labelId);
+            if (collection.DeleteOne(deleteFilter).DeletedCount > 0)
+            {
+                return true;
+            }
+            return false;
+        }
     }
 }
