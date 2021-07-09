@@ -38,6 +38,19 @@ namespace ShantyWebAPI.Controllers.User
         {
             return new JwtAuthenticationProvider().ValidateToken(jwt);
         }
+        public string GetUserType(string id)
+        {
+            MysqlConnectionProvider dbConnection = new MysqlConnectionProvider();
+            dbConnection.CreateQuery("SELECT type FROM users WHERE id='" + id + "'");
+            MySqlDataReader reader = dbConnection.DoQuery();
+            if (reader.Read())
+            {
+                return reader["type"].ToString();
+            }
+            dbConnection.Dispose();
+            dbConnection = null;
+            return "";
+        }
 
         //LISTENER REGISTRATION
         public bool RegisterListener(ListenerGlobalModel listener)
