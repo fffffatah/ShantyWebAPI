@@ -286,7 +286,8 @@ namespace ShantyWebAPI.Controllers.User
             }
             else if (jwtToken != "")
             {
-                return Ok(new { message = "Logged in Successfully", token = jwtToken });
+                string type = new UserDataAccess().GetUserType(new UserDataAccess().JwtTokenValidation(jwtToken));
+                return Ok(new { message = "Logged in Successfully", token = jwtToken, type = type });
             }
             return Unauthorized(new CustomResponseModel() { Code = "401", Phrase = "Unauthorized", Message = "Invalid Email/Password" });
         }

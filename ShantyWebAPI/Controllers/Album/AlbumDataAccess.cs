@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ShantyWebAPI.Models.Album;
 using MongoDB.Bson;
+using MySql.Data.MySqlClient;
 
 namespace ShantyWebAPI.Controllers.Album
 {
@@ -22,6 +23,23 @@ namespace ShantyWebAPI.Controllers.Album
             string imageName = "albumarts/" + id;
             AzureBlobServiceProvider azureBlob = new AzureBlobServiceProvider();
             return azureBlob.UploadFileToBlob(imageName, coverImage);
+        }
+        public string JwtTokenValidation(string jwt)
+        {
+            return new JwtAuthenticationProvider().ValidateToken(jwt);
+        }
+        public bool IsLabel(string id)
+        {
+            MysqlConnectionProvider dbConnection = new MysqlConnectionProvider();
+            dbConnection.CreateQuery("SELECT * FROM users WHERE id='" + id + "' AND type='label'");
+            MySqlDataReader reader = dbConnection.DoQuery();
+            if (reader.Read())
+            {
+                return true;
+            }
+            dbConnection.Dispose();
+            dbConnection = null;
+            return false;
         }
 
         //INSERT ALBUM

@@ -5,11 +5,15 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using ShantyWebAPI.CustomAttributes;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ShantyWebAPI.Models.Album
 {
     public class AlbumCreateModel
     {
+        [Required]
+        [FromHeader]
+        public string JwtToken { get; set; }
         [Required]
         [ImageValidation]
         public IFormFile CoverImage { get; set; }
@@ -20,7 +24,6 @@ namespace ShantyWebAPI.Models.Album
         public string Year { get; set; }
         [Required]
         public string ArtistId { get; set; }
-        [Required]
         public string LabelId { get; set; }
     }
 }
