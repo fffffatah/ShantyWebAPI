@@ -17,11 +17,14 @@ namespace ShantyWebAPI.Models.Album
         [Required]
         [ImageValidation]
         public IFormFile CoverImage { get; set; }
+        public string CoverImageUrl { get; set; }
         [Required]
         [StringLength(50, MinimumLength = 1)]
         public string AlbumName { get; set; }
         [Required]
         public string Year { get; set; }
+        [Required]
+        public string Genre { get; set; }
         [Required]
         public string ArtistId { get; set; }
         public string LabelId { get; set; }

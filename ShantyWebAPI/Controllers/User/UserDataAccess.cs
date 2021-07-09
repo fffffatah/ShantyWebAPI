@@ -73,7 +73,7 @@ namespace ShantyWebAPI.Controllers.User
                     var collection = new MongodbConnectionProvider().GeShantyDatabase().GetCollection<BsonDocument>("listeners");
                     var document = new BsonDocument
                     {
-                        { "Id", listener.Id },
+                        { "ListenerId", listener.Id },
                         { "ProfileImageUrl", listener.ProfileImageUrl },
                         { "FirstName", listener.FirstName },
                         { "LastName", listener.LastName },
@@ -113,7 +113,7 @@ namespace ShantyWebAPI.Controllers.User
                     var collection = new MongodbConnectionProvider().GeShantyDatabase().GetCollection<BsonDocument>("labels");
                     var document = new BsonDocument
                     {
-                        { "Id", label.Id },
+                        { "LabelId", label.Id },
                         { "LabelIconUrl", label.LabelIconUrl },
                         { "LabelName", label.LabelName },
                         { "EstDate", label.EstDate },
@@ -152,7 +152,7 @@ namespace ShantyWebAPI.Controllers.User
                     var collection = new MongodbConnectionProvider().GeShantyDatabase().GetCollection<BsonDocument>("artists");
                     var document = new BsonDocument
                     {
-                        { "Id", artist.Id },
+                        { "ArtistId", artist.Id },
                         { "ProfileImageUrl", artist.ProfileImageUrl },
                         { "FirstName", artist.FirstName },
                         { "LastName", artist.LastName },
@@ -235,7 +235,7 @@ namespace ShantyWebAPI.Controllers.User
         {
             artistUpdateModel.ProfileImageUrl = UploadProfileImage(artistUpdateModel.ProfileImage, artistUpdateModel.Id);
             var collection = new MongodbConnectionProvider().GeShantyDatabase().GetCollection<BsonDocument>("artists");
-            var filter = Builders<BsonDocument>.Filter.Eq("Id", artistUpdateModel.Id);
+            var filter = Builders<BsonDocument>.Filter.Eq("ArtistId", artistUpdateModel.Id);
             var update = Builders<BsonDocument>.Update.Set("ProfileImageUrl", artistUpdateModel.ProfileImageUrl)
                 .Set("FirstName", artistUpdateModel.FirstName)
                 .Set("LastName", artistUpdateModel.LastName)
@@ -251,7 +251,7 @@ namespace ShantyWebAPI.Controllers.User
         {
             listenerUpdateModel.ProfileImageUrl = UploadProfileImage(listenerUpdateModel.ProfileImage, listenerUpdateModel.Id);
             var collection = new MongodbConnectionProvider().GeShantyDatabase().GetCollection<BsonDocument>("listeners");
-            var filter = Builders<BsonDocument>.Filter.Eq("Id", listenerUpdateModel.Id);
+            var filter = Builders<BsonDocument>.Filter.Eq("ListenerId", listenerUpdateModel.Id);
             var update = Builders<BsonDocument>.Update.Set("ProfileImageUrl", listenerUpdateModel.ProfileImageUrl)
                 .Set("FirstName", listenerUpdateModel.FirstName)
                 .Set("LastName", listenerUpdateModel.LastName)
@@ -267,7 +267,7 @@ namespace ShantyWebAPI.Controllers.User
         {
             labelUpdateModel.LabelIconUrl = UploadLabelIcon(labelUpdateModel.LabelIcon, labelUpdateModel.Id);
             var collection = new MongodbConnectionProvider().GeShantyDatabase().GetCollection<BsonDocument>("labels");
-            var filter = Builders<BsonDocument>.Filter.Eq("Id", labelUpdateModel.Id);
+            var filter = Builders<BsonDocument>.Filter.Eq("LabelId", labelUpdateModel.Id);
             var update = Builders<BsonDocument>.Update.Set("LabelIconUrl", labelUpdateModel.LabelIconUrl)
                 .Set("LabelName", labelUpdateModel.LabelName)
                 .Set("EstDate", labelUpdateModel.EstDate);
@@ -295,11 +295,12 @@ namespace ShantyWebAPI.Controllers.User
             dbConnection = null;
             var collection = new MongodbConnectionProvider().GeShantyDatabase().GetCollection<BsonDocument>("artists");
             var builder = Builders<BsonDocument>.Filter;
-            var filter = builder.Eq("Id", Id);
+            var filter = builder.Eq("ArtistId", Id);
             var result = collection.Find(filter).FirstOrDefault();
             if (result != null)
             {
                 ArtistGetInfoModel res = BsonSerializer.Deserialize<ArtistGetInfoModel>(result);
+                artistGetInfoModel.ArtistId = res.ArtistId;
                 artistGetInfoModel.ProfileImageUrl = res.ProfileImageUrl;
                 artistGetInfoModel.FirstName = res.FirstName;
                 artistGetInfoModel.LastName = res.LastName;
@@ -326,11 +327,12 @@ namespace ShantyWebAPI.Controllers.User
             dbConnection = null;
             var collection = new MongodbConnectionProvider().GeShantyDatabase().GetCollection<BsonDocument>("listeners");
             var builder = Builders<BsonDocument>.Filter;
-            var filter = builder.Eq("Id", Id);
+            var filter = builder.Eq("ListenerId", Id);
             var result = collection.Find(filter).FirstOrDefault();
             if (result != null)
             {
                 ListenerGetInfoModel res = BsonSerializer.Deserialize<ListenerGetInfoModel>(result);
+                listenerGetInfoModel.ListenerId = res.ListenerId;
                 listenerGetInfoModel.ProfileImageUrl = res.ProfileImageUrl;
                 listenerGetInfoModel.FirstName = res.FirstName;
                 listenerGetInfoModel.LastName = res.LastName;
@@ -356,11 +358,12 @@ namespace ShantyWebAPI.Controllers.User
             dbConnection = null;
             var collection = new MongodbConnectionProvider().GeShantyDatabase().GetCollection<BsonDocument>("labels");
             var builder = Builders<BsonDocument>.Filter;
-            var filter = builder.Eq("Id", Id);
+            var filter = builder.Eq("LabelId", Id);
             var result = collection.Find(filter).FirstOrDefault();
             if (result != null)
             {
                 LabelGetInfoModel res = BsonSerializer.Deserialize<LabelGetInfoModel>(result);
+                labelGetInfoModel.LabelId = res.LabelId;
                 labelGetInfoModel.LabelIconUrl = res.LabelIconUrl;
                 labelGetInfoModel.LabelName = res.LabelName;
                 labelGetInfoModel.EstDate = res.EstDate;

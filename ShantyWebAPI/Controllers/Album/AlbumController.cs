@@ -51,6 +51,7 @@ namespace ShantyWebAPI.Controllers.Album
                 albumGlobalModel.LabelId = albumCreateModel.LabelId;
                 albumGlobalModel.ArtistId = albumCreateModel.ArtistId;
                 albumGlobalModel.Year = albumCreateModel.Year;
+                albumGlobalModel.Genre = albumCreateModel.Genre;
                 if (new AlbumDataAccess().CreateAlbum(albumGlobalModel))
                 {
                     return Ok(new CustomResponseModel() { Code = "200", Phrase = "OK", Message = "Album Created" });
@@ -60,11 +61,46 @@ namespace ShantyWebAPI.Controllers.Album
             {
                 return Unauthorized(new CustomResponseModel() { Code = "401", Phrase = "Unauthorized", Message = "Album Creator Must be a Label" });
             }
-            
             return BadRequest(new CustomResponseModel() { Code = "400", Phrase = "BadRequest", Message = "Album Creation Failed" });
         }
 
         //UPDATE ALBUM
+        [HttpPost]
+        [Route("update/album")]
+        public ActionResult<CustomResponseModel> UpdateAlbum([FromForm]AlbumUpdateModel albumUpdateModel, string albumId)
+        {
+            albumUpdateModel.LabelId = new AlbumDataAccess().JwtTokenValidation(albumUpdateModel.JwtToken);
+            albumUpdateModel.Id = albumId;
+            if (albumUpdateModel.LabelId == "")
+            {
+                return Unauthorized(new CustomResponseModel() { Code = "401", Phrase = "Unauthorized", Message = "Invalid Jwt Token" });
+            }
+            if (new AlbumDataAccess().IsLabel(albumUpdateModel.LabelId))
+            {
+                if (new AlbumDataAccess().UpdateAlbum(albumUpdateModel))
+                {
+                    return Ok(new CustomResponseModel() { Code = "200", Phrase = "OK", Message = "Album Updated" });
+                }
+            }
+            return BadRequest(new CustomResponseModel() { Code = "400", Phrase = "BadRequest", Message = "Album Updation Failed" });
+        }
 
+        //GET ALBUM
+        [HttpGet]
+        [Route("get/album")]
+        public ActionResult<AlbumGetModel> GetAlbum([FromHeader]string jwtToken, string albumId)
+        {
+            string userId = new AlbumDataAccess().JwtTokenValidation(jwtToken);
+            if (userId == "")
+            {
+                return Unauthorized(new CustomResponseModel() { Code = "401", Phrase = "Unauthorized", Message = "Invalid Jwt Token" });
+            }
+            AlbumGetModel albumGetModel = new AlbumDataAccess().GetAlbum(albumId);
+            if (albumGetModel != null)
+            {
+                return albumGetModel;
+            }
+            return BadRequest(new CustomResponseModel() { Code = "400", Phrase = "BadRequest", Message = "Could Not Get Album" });
+        }
     }
 }

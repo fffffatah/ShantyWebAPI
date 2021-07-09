@@ -187,6 +187,10 @@ namespace ShantyWebAPI.Controllers.User
             {
                 return Unauthorized(new CustomResponseModel() { Code = "401", Phrase = "Unauthorized", Message = "Invalid Jwt Token" });
             }
+            if(new UserDataAccess().GetUserType(artistUpdateModel.Id) != "artist")
+            {
+                return Unauthorized(new CustomResponseModel() { Code = "401", Phrase = "Unauthorized", Message = "Invalid Artist" });
+            }
             if(new UserDataAccess().UpdateArtist(artistUpdateModel))
             {
                 return Ok(new CustomResponseModel() { Code = "200", Phrase = "OK", Message = "Artist Update Successful" });
@@ -202,6 +206,10 @@ namespace ShantyWebAPI.Controllers.User
             {
                 return Unauthorized(new CustomResponseModel() { Code = "401", Phrase = "Unauthorized", Message = "Invalid Jwt Token" });
             }
+            if (new UserDataAccess().GetUserType(listenerUpdateModel.Id) != "listener")
+            {
+                return Unauthorized(new CustomResponseModel() { Code = "401", Phrase = "Unauthorized", Message = "Invalid Listener" });
+            }
             if (new UserDataAccess().UpdateListener(listenerUpdateModel))
             {
                 return Ok(new CustomResponseModel() { Code = "200", Phrase = "OK", Message = "Listener Update Successful" });
@@ -216,6 +224,10 @@ namespace ShantyWebAPI.Controllers.User
             if (labelUpdateModel.Id == "")
             {
                 return Unauthorized(new CustomResponseModel() { Code = "401", Phrase = "Unauthorized", Message = "Invalid Jwt Token" });
+            }
+            if (new UserDataAccess().GetUserType(labelUpdateModel.Id) != "label")
+            {
+                return Unauthorized(new CustomResponseModel() { Code = "401", Phrase = "Unauthorized", Message = "Invalid Label" });
             }
             if (new UserDataAccess().UpdateLabel(labelUpdateModel))
             {
@@ -234,6 +246,10 @@ namespace ShantyWebAPI.Controllers.User
             {
                 return Unauthorized(new CustomResponseModel() { Code = "401", Phrase = "Unauthorized", Message = "Invalid Jwt Token" });
             }
+            if (new UserDataAccess().GetUserType(id) != "artist")
+            {
+                return Unauthorized(new CustomResponseModel() { Code = "401", Phrase = "Unauthorized", Message = "Invalid Artist" });
+            }
             ArtistGetInfoModel artistGetInfoModel = new UserDataAccess().GetArtistInfo(id);
             if (artistGetInfoModel != null)
             {
@@ -250,6 +266,10 @@ namespace ShantyWebAPI.Controllers.User
             {
                 return Unauthorized(new CustomResponseModel() { Code = "401", Phrase = "Unauthorized", Message = "Invalid Jwt Token" });
             }
+            if (new UserDataAccess().GetUserType(id) != "listener")
+            {
+                return Unauthorized(new CustomResponseModel() { Code = "401", Phrase = "Unauthorized", Message = "Invalid Listener" });
+            }
             ListenerGetInfoModel listenerGetInfoModel = new UserDataAccess().GetListenerInfo(id);
             if (listenerGetInfoModel != null)
             {
@@ -265,6 +285,10 @@ namespace ShantyWebAPI.Controllers.User
             if (id == "")
             {
                 return Unauthorized(new CustomResponseModel() { Code = "401", Phrase = "Unauthorized", Message = "Invalid Jwt Token" });
+            }
+            if (new UserDataAccess().GetUserType(id) != "label")
+            {
+                return Unauthorized(new CustomResponseModel() { Code = "401", Phrase = "Unauthorized", Message = "Invalid Label" });
             }
             LabelGetInfoModel labelGetInfoModel = new UserDataAccess().GetLabelInfo(id);
             if (labelGetInfoModel != null)
