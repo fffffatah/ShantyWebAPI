@@ -35,7 +35,7 @@ namespace ShantyWebAPI.Controllers.User
         //REGSTRATION
         [HttpPost]
         [Route("register/listener")]
-        public ActionResult<ListenerRegistrationModel> PutListener([FromForm]ListenerRegistrationModel listenerRegistrationModel)
+        public ActionResult<CustomResponseModel> PutListener([FromForm]ListenerRegistrationModel listenerRegistrationModel)
         {
             ListenerGlobalModel listenerGlobalModel = new ListenerGlobalModel();
             listenerGlobalModel.Id = GenerateUserId(listenerRegistrationModel.Username + DateTime.Now.ToString("dddd, dd MMMM yyyy HH:mm:ss"));
@@ -61,7 +61,7 @@ namespace ShantyWebAPI.Controllers.User
         }
         [HttpPost]
         [Route("register/label")]
-        public ActionResult<LabelRegistrationModel> PutLabel([FromForm] LabelRegistrationModel labelRegistrationModel)
+        public ActionResult<CustomResponseModel> PutLabel([FromForm] LabelRegistrationModel labelRegistrationModel)
         {
             LabelGlobalModel labelGlobalModel = new LabelGlobalModel();
             labelGlobalModel.Id = GenerateUserId(labelRegistrationModel.Username + DateTime.Now.ToString("dddd, dd MMMM yyyy HH:mm:ss"));
@@ -86,7 +86,7 @@ namespace ShantyWebAPI.Controllers.User
         }
         [HttpPost]
         [Route("register/artist")]
-        public ActionResult<ArtistRegistrationModel> PutArtist([FromForm] ArtistRegistrationModel artistRegistrationModel)
+        public ActionResult<CustomResponseModel> PutArtist([FromForm] ArtistRegistrationModel artistRegistrationModel)
         {
             ArtistGlobalModel artistGlobalModel = new ArtistGlobalModel();
             artistGlobalModel.Id = GenerateUserId(artistRegistrationModel.Username + DateTime.Now.ToString("dddd, dd MMMM yyyy HH:mm:ss"));
@@ -115,7 +115,7 @@ namespace ShantyWebAPI.Controllers.User
         //VERIFY EMAIL
         [HttpGet]
         [Route("email/verify")]
-        public ActionResult VerifyEmail(string id)
+        public ActionResult<CustomResponseModel> VerifyEmail(string id)
         {
             if(new UserDataAccess().VerifyEmail(id))
             {
@@ -127,7 +127,7 @@ namespace ShantyWebAPI.Controllers.User
         //RESET OR CHANGE PASSWORD
         [HttpPost]
         [Route("change/password")]
-        public ActionResult<ChangePasswordModel> ChangePassword([FromForm] ChangePasswordModel changePasswordModel)
+        public ActionResult<CustomResponseModel> ChangePassword([FromForm] ChangePasswordModel changePasswordModel)
         {
             changePasswordModel.NewPass = BCrypt.Net.BCrypt.HashPassword(changePasswordModel.NewPass, BCrypt.Net.BCrypt.GenerateSalt());
             string id = new UserDataAccess().JwtTokenValidation(changePasswordModel.JwtToken);
@@ -162,7 +162,7 @@ namespace ShantyWebAPI.Controllers.User
         }
         [HttpPost]
         [Route("reset/password")]
-        public ActionResult<ResetPasswordModel> ResetPassword([FromForm] ResetPasswordModel resetPasswordModel)
+        public ActionResult<CustomResponseModel> ResetPassword([FromForm] ResetPasswordModel resetPasswordModel)
         {
             resetPasswordModel.NewPass = BCrypt.Net.BCrypt.HashPassword(resetPasswordModel.NewPass, BCrypt.Net.BCrypt.GenerateSalt());
             string id = new UserDataAccess().JwtTokenValidation(resetPasswordModel.JwtToken);
@@ -180,7 +180,7 @@ namespace ShantyWebAPI.Controllers.User
         //UPDATE USER DATA
         [HttpPost]
         [Route("update/artist")]
-        public ActionResult<ArtistUpdateModel> UpdateArtist([FromForm] ArtistUpdateModel artistUpdateModel)
+        public ActionResult<CustomResponseModel> UpdateArtist([FromForm] ArtistUpdateModel artistUpdateModel)
         {
             artistUpdateModel.Id = new UserDataAccess().JwtTokenValidation(artistUpdateModel.JwtToken);
             if (artistUpdateModel.Id == "")
@@ -195,7 +195,7 @@ namespace ShantyWebAPI.Controllers.User
         }
         [HttpPost]
         [Route("update/listener")]
-        public ActionResult<ArtistUpdateModel> UpdateListener([FromForm] ListenerUpdateModel listenerUpdateModel)
+        public ActionResult<CustomResponseModel> UpdateListener([FromForm] ListenerUpdateModel listenerUpdateModel)
         {
             listenerUpdateModel.Id = new UserDataAccess().JwtTokenValidation(listenerUpdateModel.JwtToken);
             if (listenerUpdateModel.Id == "")
@@ -210,7 +210,7 @@ namespace ShantyWebAPI.Controllers.User
         }
         [HttpPost]
         [Route("update/label")]
-        public ActionResult<ArtistUpdateModel> UpdateLabel([FromForm] LabelUpdateModel labelUpdateModel)
+        public ActionResult<CustomResponseModel> UpdateLabel([FromForm] LabelUpdateModel labelUpdateModel)
         {
             labelUpdateModel.Id = new UserDataAccess().JwtTokenValidation(labelUpdateModel.JwtToken);
             if (labelUpdateModel.Id == "")
@@ -235,7 +235,10 @@ namespace ShantyWebAPI.Controllers.User
                 return Unauthorized(new CustomResponseModel() { Code = "401", Phrase = "Unauthorized", Message = "Invalid Jwt Token" });
             }
             ArtistGetInfoModel artistGetInfoModel = new UserDataAccess().GetArtistInfo(id);
-            //todo
+            if (artistGetInfoModel != null)
+            {
+                return artistGetInfoModel;
+            }
             return BadRequest(new CustomResponseModel() { Code = "400", Phrase = "BadRequest", Message = "Failed To Get Artist" });
         }
         [HttpGet]
@@ -248,7 +251,10 @@ namespace ShantyWebAPI.Controllers.User
                 return Unauthorized(new CustomResponseModel() { Code = "401", Phrase = "Unauthorized", Message = "Invalid Jwt Token" });
             }
             ListenerGetInfoModel listenerGetInfoModel = new UserDataAccess().GetListenerInfo(id);
-            //todo
+            if (listenerGetInfoModel != null)
+            {
+                return listenerGetInfoModel;
+            }
             return BadRequest(new CustomResponseModel() { Code = "400", Phrase = "BadRequest", Message = "Failed To Get Listener" });
         }
         [HttpGet]
@@ -261,7 +267,10 @@ namespace ShantyWebAPI.Controllers.User
                 return Unauthorized(new CustomResponseModel() { Code = "401", Phrase = "Unauthorized", Message = "Invalid Jwt Token" });
             }
             LabelGetInfoModel labelGetInfoModel = new UserDataAccess().GetLabelInfo(id);
-            //todo
+            if (labelGetInfoModel != null)
+            {
+                return labelGetInfoModel;
+            }
             return BadRequest(new CustomResponseModel() { Code = "400", Phrase = "BadRequest", Message = "Failed To Get Label" });
         }
 

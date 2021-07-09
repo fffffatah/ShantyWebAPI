@@ -5,9 +5,12 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using MongoDB.Bson.Serialization.Attributes;
 using MySql.Data.MySqlClient;
 using ShantyWebAPI.Models.User;
 using ShantyWebAPI.Providers;
+using MongoDB.Bson.IO;
+using MongoDB.Bson.Serialization;
 
 namespace ShantyWebAPI.Controllers.User
 {
@@ -239,20 +242,95 @@ namespace ShantyWebAPI.Controllers.User
         }
 
         //GET USER DATA
-        public ArtistGetInfoModel GetArtistInfo(string id)
+        public ArtistGetInfoModel GetArtistInfo(string Id)
         {
-            //todo
-            return null;
+            dbConnection.CreateQuery("SELECT username,email,phone FROM users WHERE id='"+Id+"'");
+            ArtistGetInfoModel artistGetInfoModel = null;
+            MySqlDataReader reader = dbConnection.DoQuery();
+            while (reader.Read())
+            {
+                artistGetInfoModel = new ArtistGetInfoModel();
+                artistGetInfoModel.Username = reader["username"].ToString();
+                artistGetInfoModel.Email = reader["email"].ToString();
+                artistGetInfoModel.Phone = reader["phone"].ToString();
+            }
+            dbConnection.Dispose();
+            dbConnection = null;
+            var collection = new MongodbConnectionProvider().GeShantyDatabase().GetCollection<BsonDocument>("artists");
+            var builder = Builders<BsonDocument>.Filter;
+            var filter = builder.Eq("Id", Id);
+            var result = collection.Find(filter).FirstOrDefault();
+            if (result != null)
+            {
+                ArtistGetInfoModel res = BsonSerializer.Deserialize<ArtistGetInfoModel>(result);
+                artistGetInfoModel.ProfileImageUrl = res.ProfileImageUrl;
+                artistGetInfoModel.FirstName = res.FirstName;
+                artistGetInfoModel.LastName = res.LastName;
+                artistGetInfoModel.Dob = res.Dob;
+                artistGetInfoModel.Region = res.Region;
+                artistGetInfoModel.IsVerified = res.IsVerified;
+                artistGetInfoModel.LabelId = res.LabelId;
+            }
+            return artistGetInfoModel;
         }
-        public ListenerGetInfoModel GetListenerInfo(string id)
+        public ListenerGetInfoModel GetListenerInfo(string Id)
         {
-            //todo
-            return null;
+            dbConnection.CreateQuery("SELECT username,email,phone FROM users WHERE id='" + Id + "'");
+            ListenerGetInfoModel listenerGetInfoModel = null;
+            MySqlDataReader reader = dbConnection.DoQuery();
+            while (reader.Read())
+            {
+                listenerGetInfoModel = new ListenerGetInfoModel();
+                listenerGetInfoModel.Username = reader["username"].ToString();
+                listenerGetInfoModel.Email = reader["email"].ToString();
+                listenerGetInfoModel.Phone = reader["phone"].ToString();
+            }
+            dbConnection.Dispose();
+            dbConnection = null;
+            var collection = new MongodbConnectionProvider().GeShantyDatabase().GetCollection<BsonDocument>("listeners");
+            var builder = Builders<BsonDocument>.Filter;
+            var filter = builder.Eq("Id", Id);
+            var result = collection.Find(filter).FirstOrDefault();
+            if (result != null)
+            {
+                ListenerGetInfoModel res = BsonSerializer.Deserialize<ListenerGetInfoModel>(result);
+                listenerGetInfoModel.ProfileImageUrl = res.ProfileImageUrl;
+                listenerGetInfoModel.FirstName = res.FirstName;
+                listenerGetInfoModel.LastName = res.LastName;
+                listenerGetInfoModel.Dob = res.Dob;
+                listenerGetInfoModel.Region = res.Region;
+                listenerGetInfoModel.IsSubscriber = res.IsSubscriber;
+            }
+            return listenerGetInfoModel;
         }
-        public LabelGetInfoModel GetLabelInfo(string id)
+        public LabelGetInfoModel GetLabelInfo(string Id)
         {
-            //todo
-            return null;
+            dbConnection.CreateQuery("SELECT username,email,phone FROM users WHERE id='" + Id + "'");
+            LabelGetInfoModel labelGetInfoModel = null;
+            MySqlDataReader reader = dbConnection.DoQuery();
+            while (reader.Read())
+            {
+                labelGetInfoModel = new LabelGetInfoModel();
+                labelGetInfoModel.Username = reader["username"].ToString();
+                labelGetInfoModel.Email = reader["email"].ToString();
+                labelGetInfoModel.Phone = reader["phone"].ToString();
+            }
+            dbConnection.Dispose();
+            dbConnection = null;
+            var collection = new MongodbConnectionProvider().GeShantyDatabase().GetCollection<BsonDocument>("labels");
+            var builder = Builders<BsonDocument>.Filter;
+            var filter = builder.Eq("Id", Id);
+            var result = collection.Find(filter).FirstOrDefault();
+            if (result != null)
+            {
+                LabelGetInfoModel res = BsonSerializer.Deserialize<LabelGetInfoModel>(result);
+                labelGetInfoModel.LabelIconUrl = res.LabelIconUrl;
+                labelGetInfoModel.LabelName = res.LabelName;
+                labelGetInfoModel.EstDate = res.EstDate;
+                labelGetInfoModel.IsVerified = res.IsVerified;
+                labelGetInfoModel.Region = res.Region;
+            }
+            return labelGetInfoModel;
         }
 
         //USER LOGIN
