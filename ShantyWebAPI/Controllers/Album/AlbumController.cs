@@ -104,6 +104,28 @@ namespace ShantyWebAPI.Controllers.Album
             return BadRequest(new CustomResponseModel() { Code = "400", Phrase = "BadRequest", Message = "Could Not Get Album" });
         }
 
+        //GET ALBUM FOR LABEL OR ARTIST
+        [HttpGet]
+        [Route("get/album/list")]
+        public ActionResult<List<AlbumGetModel>> GetAlbumList([FromHeader][Required] string jwtToken)
+        {
+            string userId = new AlbumDataAccess().JwtTokenValidation(jwtToken);
+            if (userId == "")
+            {
+                return Unauthorized(new CustomResponseModel() { Code = "401", Phrase = "Unauthorized", Message = "Invalid Jwt Token" });
+            }
+            List<AlbumGetModel> albumGetModels = new AlbumDataAccess().GetAlbumList(userId);
+            if (new AlbumDataAccess().IsLabelOrArtist(userId))
+            {
+                if (albumGetModels != null)
+                {
+                    return albumGetModels;
+                }
+            }
+            
+            return BadRequest(new CustomResponseModel() { Code = "400", Phrase = "BadRequest", Message = "Could Not Get Album" });
+        }
+
         //DELETE ALBUM
         [HttpGet]
         [Route("delete/album")]
