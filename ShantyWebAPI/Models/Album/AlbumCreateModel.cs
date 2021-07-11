@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ShantyWebAPI.CustomAttributes;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json.Serialization;
 
 namespace ShantyWebAPI.Models.Album
 {
@@ -17,6 +18,7 @@ namespace ShantyWebAPI.Models.Album
         [Required]
         [ImageValidation]
         public IFormFile CoverImage { get; set; }
+        [JsonIgnore]
         public string CoverImageUrl { get; set; }
         [Required]
         [StringLength(50, MinimumLength = 1)]
@@ -27,6 +29,7 @@ namespace ShantyWebAPI.Models.Album
         public string Genre { get; set; }
         [Required]
         public string ArtistId { get; set; }
+        [JsonIgnore]
         public string LabelId { get; set; }
     }
 }
