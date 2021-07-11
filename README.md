@@ -1,1 +1,3 @@
-[![Build](https://github.com/fffffatah/ShantyWebAPI/actions/workflows/shantyapi.yml/badge.svg?branch=master)](https://github.com/fffffatah/ShantyWebAPI/actions/workflows/shantyapi.yml)
+| Full API Reference           | Build Status                                                                                                                                                                             |
+| ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| https://shantyapi.readme.io/ | [![Build](https://github.com/fffffatah/ShantyWebAPI/actions/workflows/shantyapi.yml/badge.svg?branch=master)](https://github.com/fffffatah/ShantyWebAPI/actions/workflows/shantyapi.yml) |

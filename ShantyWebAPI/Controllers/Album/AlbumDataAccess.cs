@@ -43,6 +43,19 @@ namespace ShantyWebAPI.Controllers.Album
             dbConnection = null;
             return false;
         }
+        public bool IsLabelOrArtist(string id)
+        {
+            MysqlConnectionProvider dbConnection = new MysqlConnectionProvider();
+            dbConnection.CreateQuery("SELECT * FROM users WHERE id='" + id + "' AND type='label' OR type='artist'");
+            MySqlDataReader reader = dbConnection.DoQuery();
+            if (reader.Read())
+            {
+                return true;
+            }
+            dbConnection.Dispose();
+            dbConnection = null;
+            return false;
+        }
 
         //INSERT ALBUM
         public bool CreateAlbum(AlbumGlobalModel albumGlobalModel)
@@ -85,7 +98,7 @@ namespace ShantyWebAPI.Controllers.Album
             }
             return false;
         }
-        //GET ALBUM
+        //GET ALBUM BY ALBUM ID
         public AlbumGetModel GetAlbum(string id)
         {
             AlbumGetModel albumGetModel = null;
@@ -106,6 +119,32 @@ namespace ShantyWebAPI.Controllers.Album
                 albumGetModel.LabelId = res.LabelId;
             }
             return albumGetModel;
+        }
+        //GET ALBUM LIST FOR LABEL OR ARTIST
+        public List<AlbumGetModel> GetAlbumList(string id)
+        {
+            List<AlbumGetModel> albumGetModels = null;
+            var collection = new MongodbConnectionProvider().GeShantyDatabase().GetCollection<BsonDocument>("albums");
+            var builder = Builders<BsonDocument>.Filter;
+            var filter = builder.Eq("LabelId", id) | builder.Eq("ArtistId", id);
+            var results = collection.Find(filter).ToList();
+            foreach(BsonDocument result in results)
+            {
+                if (result != null)
+                {
+                    AlbumGetModel albumGetModel = new AlbumGetModel();
+                    AlbumGetModel res = BsonSerializer.Deserialize<AlbumGetModel>(result);
+                    albumGetModel.AlbumId = res.AlbumId;
+                    albumGetModel.AlbumName = res.AlbumName;
+                    albumGetModel.CoverImageUrl = res.CoverImageUrl;
+                    albumGetModel.Year = res.Year;
+                    albumGetModel.Genre = res.Genre;
+                    albumGetModel.ArtistId = res.ArtistId;
+                    albumGetModel.LabelId = res.LabelId;
+                    albumGetModels.Add(albumGetModel);
+                }
+            }
+            return albumGetModels;
         }
         //DELETE ALBUM
         public bool DeleteAlbum(string labelId, string albumId)
