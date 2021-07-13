@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace ShantyWebAPI.Models.Song
 {
-    public class SongUploadModel
+    public class SongUpdateModel
     {
         [Required]
         [FromHeader]

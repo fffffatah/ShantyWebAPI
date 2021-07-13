@@ -22,7 +22,6 @@
     <Folder Include="Controllers\Recommendation\" />
     <Folder Include="Controllers\Playlist\" />
     <Folder Include="Controllers\Search\" />
-    <Folder Include="Controllers\Song\" />
     <Folder Include="Models\Playlist\" />
   </ItemGroup>
 
