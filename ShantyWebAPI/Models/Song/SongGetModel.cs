@@ -6,12 +6,11 @@ using System.Threading.Tasks;
 
 namespace ShantyWebAPI.Models.Song
 {
-    public class SongGlobalModel
+    public class SongGetModel
     {
-        public string Id { get; set; }
+        public string SongId { get; set; }
         public string SongName { get; set; }
         public string ArtistName { get; set; }
-        public IFormFile SongFile { get; set; }
         public string SongFileUrl { get; set; }
         public string Genre { get; set; }
         public int TimesStreamed { get; set; }
