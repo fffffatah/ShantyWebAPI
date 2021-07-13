@@ -129,7 +129,7 @@ namespace ShantyWebAPI.Controllers.Album
         //DELETE ALBUM
         [HttpGet]
         [Route("delete/album")]
-        public ActionResult<AlbumGetModel> DeleteAlbum([FromHeader][Required] string jwtToken, [Required] string albumId)
+        public ActionResult<CustomResponseModel> DeleteAlbum([FromHeader][Required] string jwtToken, [Required] string albumId)
         {
             string labelId = new AlbumDataAccess().JwtTokenValidation(jwtToken);
             if (labelId == "")
@@ -140,7 +140,7 @@ namespace ShantyWebAPI.Controllers.Album
             {
                 if (new AlbumDataAccess().DeleteAlbum(labelId,albumId))
                 {
-                    return Ok(new CustomResponseModel() { Code = "200", Phrase = "OK", Message = "Album Delete" });
+                    return Ok(new CustomResponseModel() { Code = "200", Phrase = "OK", Message = "Album Deleted" });
                 }
             }
             return BadRequest(new CustomResponseModel() { Code = "400", Phrase = "BadRequest", Message = "Could Not Delete Album" });
