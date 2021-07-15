@@ -20,9 +20,6 @@
 
   <ItemGroup>
     <Folder Include="Controllers\Recommendation\" />
-    <Folder Include="Controllers\Playlist\" />
-    <Folder Include="Controllers\Search\" />
-    <Folder Include="Models\Playlist\" />
   </ItemGroup>
 
 </Project>
