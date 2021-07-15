@@ -4,6 +4,7 @@ using ShantyWebAPI.Models;
 using ShantyWebAPI.Models.Playlist;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -59,6 +60,29 @@ namespace ShantyWebAPI.Controllers.Playlist
                 return Unauthorized(new CustomResponseModel() { Code = "401", Phrase = "Unauthorized", Message = "Playlist Creator Must be a Listener or Artist" });
             }
             return BadRequest(new CustomResponseModel() { Code = "400", Phrase = "BadRequest", Message = "Playlist Creation Failed" });
+        }
+        //DELETE ALBUM
+        [HttpGet]
+        [Route("delete/playlist")]
+        public ActionResult<CustomResponseModel> DeleteAlbum([FromHeader][Required] string jwtToken, [Required] string playlistId)
+        {
+            string userId = new PlaylistDataAccess().JwtTokenValidation(jwtToken);
+            if (userId == "")
+            {
+                return Unauthorized(new CustomResponseModel() { Code = "401", Phrase = "Unauthorized", Message = "Invalid Jwt Token" });
+            }
+            if (new PlaylistDataAccess().IsListenerOrArtist(userId))
+            {
+                if (new PlaylistDataAccess().DeletePlaylist(userId, playlistId))
+                {
+                    return Ok(new CustomResponseModel() { Code = "200", Phrase = "OK", Message = "Playlist Deleted" });
+                }
+            }
+            else
+            {
+                return Unauthorized(new CustomResponseModel() { Code = "401", Phrase = "Unauthorized", Message = "User Must be a Listener or Artist" });
+            }
+            return BadRequest(new CustomResponseModel() { Code = "400", Phrase = "BadRequest", Message = "Could Not Delete Playlist" });
         }
     }
 }

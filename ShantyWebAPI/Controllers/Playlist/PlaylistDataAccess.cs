@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using MongoDB.Bson;
+using MongoDB.Driver;
 using MySql.Data.MySqlClient;
 using ShantyWebAPI.Models.Album;
 using ShantyWebAPI.Models.Playlist;
@@ -59,6 +60,18 @@ namespace ShantyWebAPI.Controllers.Playlist
             {
                 return false;
             }
+        }
+
+        //DELETE ALBUM
+        public bool DeletePlaylist(string userId, string playlistId)
+        {
+            var collection = new MongodbConnectionProvider().GeShantyDatabase().GetCollection<BsonDocument>("playlists");
+            var deleteFilter = Builders<BsonDocument>.Filter.Eq("CreatorId", userId) & Builders<BsonDocument>.Filter.Eq("PlaylistId", playlistId);
+            if (collection.DeleteOne(deleteFilter).DeletedCount > 0)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }
