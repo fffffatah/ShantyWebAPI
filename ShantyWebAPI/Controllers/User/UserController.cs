@@ -135,9 +135,16 @@ namespace ShantyWebAPI.Controllers.User
             {
                 return Unauthorized(new CustomResponseModel() { Code = "401", Phrase = "Unauthorized", Message = "Invalid Jwt Token" });
             }
-            if (new UserDataAccess().ResetChangePassword(id, changePasswordModel.NewPass))
+            if(new UserDataAccess().MatchPassword(id, changePasswordModel.NewPass))
             {
-                return Ok(new CustomResponseModel() { Code = "200", Phrase = "OK", Message = "Password Changed Successfully" });
+                if (new UserDataAccess().ResetChangePassword(id, changePasswordModel.NewPass))
+                {
+                    return Ok(new CustomResponseModel() { Code = "200", Phrase = "OK", Message = "Password Changed Successfully" });
+                }
+            }
+            else
+            {
+                return BadRequest(new CustomResponseModel() { Code = "400", Phrase = "BadRequest", Message = "Invalid Current Password" });
             }
             return BadRequest(new CustomResponseModel() { Code = "400", Phrase = "BadRequest", Message = "Couldn't Change Password" });
         }

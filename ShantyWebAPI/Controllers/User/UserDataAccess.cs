@@ -426,5 +426,20 @@ namespace ShantyWebAPI.Controllers.User
             dbConnection.Dispose();
             return true;
         }
+
+        //MATCH PASSWORD
+        public bool MatchPassword(string id, string pass)
+        {
+            MysqlConnectionProvider dbConnection = new MysqlConnectionProvider();
+            dbConnection.CreateQuery("SELECT pass FROM users WHERE id='" + id + "'");
+            MySqlDataReader reader = dbConnection.DoQuery();
+            string dbPass = "";
+            while (reader.Read())
+            {
+                dbPass = reader["pass"].ToString();
+            }
+            dbConnection.Dispose();
+            return BCrypt.Net.BCrypt.Verify(pass, dbPass);
+        }
     }
 }

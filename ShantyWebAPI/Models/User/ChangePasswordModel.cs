@@ -14,7 +14,6 @@ namespace ShantyWebAPI.Models.User
         [FromHeader]
         public string JwtToken { get; set; }
         [Required]
-        [PasswordAuthentication(nameof(JwtToken))]
         public string CurrentPass { get; set; }
         [Required]
         [RegularExpression(@"^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$", ErrorMessage = "Password Must be 8 in Length and Must Contain Uppercase, Number and a Special Character")]
