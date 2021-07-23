@@ -115,6 +115,54 @@ namespace ShantyWebAPI.Controllers.Playlist
             return (collectionPlaylist.UpdateOne(playlistFilter, update).ModifiedCount > 0);
         }
 
+        //GET PLAYLIST
+        public PlaylistGetModel GetPlaylist(string playlistId)
+        {
+            PlaylistGetModel playlistGetModel = null;
+            var collection = new MongodbConnectionProvider().GeShantyDatabase().GetCollection<BsonDocument>("playlists");
+            var builder = Builders<BsonDocument>.Filter;
+            var filter = builder.Eq("PlaylistId", playlistId);
+            var result = collection.Find(filter).FirstOrDefault();
+            if (result != null)
+            {
+                playlistGetModel = BsonSerializer.Deserialize<PlaylistGetModel>(result);
+                playlistGetModel.SongGetModels = new List<SongGetModel>();
+                foreach (BsonDocument res in result.GetValue("Songs").AsBsonArray)
+                {
+                    playlistGetModel.SongGetModels.Add(BsonSerializer.Deserialize<SongGetModel>(res));
+                }
+            }
+            return playlistGetModel;
+        }
+
+        //GET ALL PLAYLIST
+        public List<PlaylistGetModel> GetAllPlaylist(string creatorId)
+        { 
+            List<PlaylistGetModel> playlistGetModels = new List<PlaylistGetModel>();
+            var collection = new MongodbConnectionProvider().GeShantyDatabase().GetCollection<BsonDocument>("playlists");
+            var builder = Builders<BsonDocument>.Filter;
+            var filter = builder.Eq("CreatorId", creatorId);
+            var results = collection.Find(filter).ToList();
+            int i = 0;
+            foreach (BsonDocument result in results)
+            {
+                if (result != null)
+                {
+                    playlistGetModels.Add(BsonSerializer.Deserialize<PlaylistGetModel>(result));
+                    playlistGetModels.ElementAt(i).SongGetModels = new List<SongGetModel>();
+                    foreach (BsonDocument res in result.GetValue("Songs").AsBsonArray)
+                    {
+                        if (res != null)
+                        {
+                            playlistGetModels.ElementAt(i).SongGetModels.Add(BsonSerializer.Deserialize<SongGetModel>(res));
+                        }
+                    }
+                }
+                i++;
+            }
+            return playlistGetModels;
+        }
+
         //DELETE ALBUM
         public bool DeletePlaylist(string userId, string playlistId)
         {

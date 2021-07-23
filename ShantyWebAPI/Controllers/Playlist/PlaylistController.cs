@@ -130,5 +130,55 @@ namespace ShantyWebAPI.Controllers.Playlist
             }
             return BadRequest(new CustomResponseModel() { Code = "400", Phrase = "BadRequest", Message = "Could Not Remove Song from Playlist" });
         }
+        //GET PLAYLIST
+        [HttpGet]
+        [Route("get/playlist")]
+        public ActionResult<PlaylistGetModel> GetPlaylist([FromHeader][Required] string jwtToken, [Required] string playlistId)
+        {
+            string userId = new PlaylistDataAccess().JwtTokenValidation(jwtToken);
+            if (userId == "")
+            {
+                return Unauthorized(new CustomResponseModel() { Code = "401", Phrase = "Unauthorized", Message = "Invalid Jwt Token" });
+            }
+            PlaylistGetModel playlistGetModel = null;
+            if (new PlaylistDataAccess().IsListenerOrArtist(userId))
+            {
+                playlistGetModel = new PlaylistDataAccess().GetPlaylist(playlistId);
+            }
+            else
+            {
+                return Unauthorized(new CustomResponseModel() { Code = "401", Phrase = "Unauthorized", Message = "User Must be a Listener or Artist" });
+            }
+            if (playlistGetModel != null)
+            {
+                return playlistGetModel;
+            }
+            return BadRequest(new CustomResponseModel() { Code = "400", Phrase = "BadRequest", Message = "Could Not Get Playlist" });
+        }
+        //GET ALL PLAYLIST
+        [HttpGet]
+        [Route("get/playlist/all")]
+        public ActionResult<List<PlaylistGetModel>> GetAllPlaylist([FromHeader][Required] string jwtToken)
+        {
+            string creatorId = new PlaylistDataAccess().JwtTokenValidation(jwtToken);
+            if (creatorId == "")
+            {
+                return Unauthorized(new CustomResponseModel() { Code = "401", Phrase = "Unauthorized", Message = "Invalid Jwt Token" });
+            }
+            List<PlaylistGetModel> playlistGetModels = null;
+            if (new PlaylistDataAccess().IsListenerOrArtist(creatorId))
+            {
+                playlistGetModels = new PlaylistDataAccess().GetAllPlaylist(creatorId);
+            }
+            else
+            {
+                return Unauthorized(new CustomResponseModel() { Code = "401", Phrase = "Unauthorized", Message = "User Must be a Listener or Artist" });
+            }
+            if (playlistGetModels != null)
+            {
+                return playlistGetModels;
+            }
+            return BadRequest(new CustomResponseModel() { Code = "400", Phrase = "BadRequest", Message = "Could Not Get All Playlist" });
+        }
     }
 }
