@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using MongoDB.Bson.Serialization.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace ShantyWebAPI.Models.Song
 {
+    [BsonIgnoreExtraElements]
     public class SongGetModel
     {
         public string SongId { get; set; }
