@@ -62,6 +62,20 @@ namespace ShantyWebAPI.Controllers.Playlist
             }
         }
 
+        //ADD SONG PLAYLIST
+        public bool AddSongPlaylist(string playlistId, string songId)
+        {
+            //todo
+            return false;
+        }
+
+        //REMOVE SONG PLAYLIST
+        public bool RemoveSongPlaylist(string playlistId, string songId)
+        {
+            //todo
+            return false;
+        }
+
         //DELETE ALBUM
         public bool DeletePlaylist(string userId, string playlistId)
         {

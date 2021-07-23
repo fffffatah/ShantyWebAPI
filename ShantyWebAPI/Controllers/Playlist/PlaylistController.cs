@@ -61,7 +61,7 @@ namespace ShantyWebAPI.Controllers.Playlist
             }
             return BadRequest(new CustomResponseModel() { Code = "400", Phrase = "BadRequest", Message = "Playlist Creation Failed" });
         }
-        //DELETE ALBUM
+        //DELETE PLAYLIST
         [HttpGet]
         [Route("delete/playlist")]
         public ActionResult<CustomResponseModel> DeleteAlbum([FromHeader][Required] string jwtToken, [Required] string playlistId)
@@ -83,6 +83,46 @@ namespace ShantyWebAPI.Controllers.Playlist
                 return Unauthorized(new CustomResponseModel() { Code = "401", Phrase = "Unauthorized", Message = "User Must be a Listener or Artist" });
             }
             return BadRequest(new CustomResponseModel() { Code = "400", Phrase = "BadRequest", Message = "Could Not Delete Playlist" });
+        }
+        //ADD SONG TO PLAYLIST
+        [HttpGet]
+        [Route("add/playlist/song")]
+        public ActionResult<CustomResponseModel> AddSongPlaylist([FromHeader][Required] string jwtToken, [Required] string playlistId, [Required] string songId)
+        {
+            string userId = new PlaylistDataAccess().JwtTokenValidation(jwtToken);
+            if (userId == "")
+            {
+                return Unauthorized(new CustomResponseModel() { Code = "401", Phrase = "Unauthorized", Message = "Invalid Jwt Token" });
+            }
+            if (new PlaylistDataAccess().IsListenerOrArtist(userId))
+            {
+                //todo
+            }
+            else
+            {
+                return Unauthorized(new CustomResponseModel() { Code = "401", Phrase = "Unauthorized", Message = "User Must be a Listener or Artist" });
+            }
+            return BadRequest(new CustomResponseModel() { Code = "400", Phrase = "BadRequest", Message = "Could Not Add Song to Playlist" });
+        }
+        //REMOVE SONG FROM PLAYLIST
+        [HttpGet]
+        [Route("remove/playlist/song")]
+        public ActionResult<CustomResponseModel> RemoveSongPlaylist([FromHeader][Required] string jwtToken, [Required] string playlistId, [Required] string songId)
+        {
+            string userId = new PlaylistDataAccess().JwtTokenValidation(jwtToken);
+            if (userId == "")
+            {
+                return Unauthorized(new CustomResponseModel() { Code = "401", Phrase = "Unauthorized", Message = "Invalid Jwt Token" });
+            }
+            if (new PlaylistDataAccess().IsListenerOrArtist(userId))
+            {
+                //todo
+            }
+            else
+            {
+                return Unauthorized(new CustomResponseModel() { Code = "401", Phrase = "Unauthorized", Message = "User Must be a Listener or Artist" });
+            }
+            return BadRequest(new CustomResponseModel() { Code = "400", Phrase = "BadRequest", Message = "Could Not Remove Song from Playlist" });
         }
     }
 }
