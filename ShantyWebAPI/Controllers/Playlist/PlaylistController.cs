@@ -46,9 +46,9 @@ namespace ShantyWebAPI.Controllers.Playlist
             {
                 PlaylistGlobalModel playlistGlobalModel = new PlaylistGlobalModel();
                 playlistGlobalModel.PlaylistId = GenerateUserId();
-                playlistGlobalModel.PlaylistName = playlistGlobalModel.PlaylistName;
-                playlistGlobalModel.PlaylistImage = playlistGlobalModel.PlaylistImage;
-                playlistGlobalModel.PlaylistImageUrl = new PlaylistDataAccess().UploadPlaylistCoverImage(playlistGlobalModel.PlaylistImage, playlistGlobalModel.PlaylistId);
+                playlistGlobalModel.PlaylistName = playlistCreateModel.PlaylistName;
+                playlistGlobalModel.PlaylistImage = playlistCreateModel.PlaylistImage;
+                playlistGlobalModel.PlaylistImageUrl = new PlaylistDataAccess().UploadPlaylistCoverImage(playlistCreateModel.PlaylistImage, playlistGlobalModel.PlaylistId);
                 playlistGlobalModel.CreatorId = playlistCreateModel.CreatorId;
                 if (new PlaylistDataAccess().CreatePlaylist(playlistGlobalModel))
                 {
@@ -96,7 +96,10 @@ namespace ShantyWebAPI.Controllers.Playlist
             }
             if (new PlaylistDataAccess().IsListenerOrArtist(userId))
             {
-                //todo
+                if(new PlaylistDataAccess().AddSongPlaylist(userId, playlistId, songId))
+                {
+                    return Ok(new CustomResponseModel() { Code = "200", Phrase = "OK", Message = "Song Added to Playlist" });
+                }
             }
             else
             {
@@ -116,7 +119,10 @@ namespace ShantyWebAPI.Controllers.Playlist
             }
             if (new PlaylistDataAccess().IsListenerOrArtist(userId))
             {
-                //todo
+                if (new PlaylistDataAccess().RemoveSongPlaylist(userId, playlistId, songId))
+                {
+                    return Ok(new CustomResponseModel() { Code = "200", Phrase = "OK", Message = "Song Removed from Playlist" });
+                }
             }
             else
             {

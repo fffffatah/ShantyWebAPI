@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Http;
 using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 using MySql.Data.MySqlClient;
 using ShantyWebAPI.Models.Album;
 using ShantyWebAPI.Models.Playlist;
+using ShantyWebAPI.Models.Song;
 using ShantyWebAPI.Providers;
 using System;
 using System.Collections.Generic;
@@ -51,7 +53,7 @@ namespace ShantyWebAPI.Controllers.Playlist
                         { "PlaylistName", playlistGlobalModel.PlaylistName },
                         { "PlaylistImageUrl", playlistGlobalModel.PlaylistImageUrl },
                         { "CreatorId", playlistGlobalModel.CreatorId },
-                        { "Songs", new BsonDocument{ } }
+                        { "Songs", new BsonArray() }
                     };
                 collection.InsertOne(document);
                 return true;
@@ -63,17 +65,54 @@ namespace ShantyWebAPI.Controllers.Playlist
         }
 
         //ADD SONG PLAYLIST
-        public bool AddSongPlaylist(string playlistId, string songId)
+        public bool AddSongPlaylist(string userId, string playlistId, string songId)
         {
-            //todo
+            SongGetModel songGetModel = null;
+            var collection = new MongodbConnectionProvider().GeShantyDatabase().GetCollection<BsonDocument>("songs");
+            var builder = Builders<BsonDocument>.Filter;
+            var filter = builder.Eq("SongId", songId);
+            var result = collection.Find(filter).FirstOrDefault();
+            if (result != null)
+            {
+                songGetModel = new SongGetModel();
+                SongGetModel res = BsonSerializer.Deserialize<SongGetModel>(result);
+                songGetModel.SongId = res.SongId;
+                songGetModel.SongName = res.SongName;
+                songGetModel.ArtistName = res.ArtistName;
+                songGetModel.AlbumId = res.AlbumId;
+                songGetModel.Genre = res.Genre;
+                songGetModel.SongFileUrl = res.SongFileUrl;
+                songGetModel.TimesStreamed = res.TimesStreamed;
+            }
+            else
+            {
+                return false;
+            }
+            var collectionPlaylist = new MongodbConnectionProvider().GeShantyDatabase().GetCollection<BsonDocument>("playlists");
+            var playlistFilter = Builders<BsonDocument>.Filter.Eq("CreatorId", userId) & Builders<BsonDocument>.Filter.Eq("PlaylistId", playlistId);
+            var update = Builders<BsonDocument>.Update.AddToSet("Songs", new BsonDocument {
+                        { "SongId", songGetModel.SongId },
+                        { "SongName", songGetModel.SongName },
+                        { "SongFileUrl", songGetModel.SongFileUrl },
+                        { "AlbumId", songGetModel.AlbumId },
+                        { "ArtistName", songGetModel.ArtistName },
+                        { "TimesStreamed", songGetModel.TimesStreamed},
+                        { "Genre", songGetModel.Genre }
+            });
+            if(collectionPlaylist.UpdateOne(playlistFilter, update).ModifiedCount > 0)
+            {
+                return true;
+            }
             return false;
         }
 
         //REMOVE SONG PLAYLIST
-        public bool RemoveSongPlaylist(string playlistId, string songId)
+        public bool RemoveSongPlaylist(string userId, string playlistId, string songId)
         {
-            //todo
-            return false;
+            var collectionPlaylist = new MongodbConnectionProvider().GeShantyDatabase().GetCollection<BsonDocument>("playlists");
+            var playlistFilter = Builders<BsonDocument>.Filter.Eq("CreatorId", userId) & Builders<BsonDocument>.Filter.Eq("PlaylistId", playlistId);
+            var update = Builders<BsonDocument>.Update.PullFilter("Songs", Builders<BsonDocument>.Filter.Eq("SongId", songId));
+            return (collectionPlaylist.UpdateOne(playlistFilter, update).ModifiedCount > 0);
         }
 
         //DELETE ALBUM
