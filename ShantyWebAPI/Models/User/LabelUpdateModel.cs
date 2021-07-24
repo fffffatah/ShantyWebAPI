@@ -17,15 +17,12 @@ namespace ShantyWebAPI.Models.User
         public string JwtToken { get; set; }
         [JsonIgnore]
         public string Id { get; set; }
-        [Required]
         [ImageValidation]
         public IFormFile LabelIcon { get; set; }
         [JsonIgnore]
         public string LabelIconUrl { get; set; }
-        [Required]
         [StringLength(50, MinimumLength = 1)]
         public string LabelName { get; set; }
-        [Required]
         public string EstDate { get; set; }
     }
 }
