@@ -9,6 +9,7 @@ using MongoDB.Bson;
 using MySql.Data.MySqlClient;
 using MongoDB.Driver;
 using MongoDB.Bson.Serialization;
+using System.Reflection;
 
 namespace ShantyWebAPI.Controllers.Album
 {
@@ -84,14 +85,28 @@ namespace ShantyWebAPI.Controllers.Album
         //UPDATE ALBUM
         public bool UpdateAlbum(AlbumUpdateModel albumUpdateModel)
         {
-            albumUpdateModel.CoverImageUrl = UploadAlbumCoverImage(albumUpdateModel.CoverImage, albumUpdateModel.Id);
+            if (albumUpdateModel.CoverImage != null)
+            {
+                albumUpdateModel.CoverImageUrl = UploadAlbumCoverImage(albumUpdateModel.CoverImage, albumUpdateModel.Id);
+            }
+            else
+            {
+                albumUpdateModel.CoverImageUrl = null;
+            }
             var collection = new MongodbConnectionProvider().GeShantyDatabase().GetCollection<BsonDocument>("albums");
             var filter = Builders<BsonDocument>.Filter.Eq("AlbumId", albumUpdateModel.Id) & Builders<BsonDocument>.Filter.Eq("LabelId", albumUpdateModel.LabelId);
-            var update = Builders<BsonDocument>.Update.Set("CoverImageUrl", albumUpdateModel.CoverImageUrl)
-                .Set("AlbumName", albumUpdateModel.AlbumName)
-                .Set("Year", albumUpdateModel.Year)
-                .Set("ArtistId", albumUpdateModel.ArtistId)
-                .Set("Genre", albumUpdateModel.Genre);
+            var update = Builders<BsonDocument>.Update.Set("AlbumId", albumUpdateModel.Id);
+            foreach (PropertyInfo prop in albumUpdateModel.GetType().GetProperties())
+            {
+                var value = albumUpdateModel.GetType().GetProperty(prop.Name).GetValue(albumUpdateModel, null);
+                if ((prop.Name != "Id") && (prop.Name != "JwtToken") && (prop.Name != "CoverImage"))
+                {
+                    if (value != null)
+                    {
+                        update = update.Set(prop.Name, value);
+                    }
+                }
+            }
             if (collection.UpdateOne(filter, update).ModifiedCount > 0)
             {
                 return true;

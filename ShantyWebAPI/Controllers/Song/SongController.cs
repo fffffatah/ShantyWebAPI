@@ -77,15 +77,8 @@ namespace ShantyWebAPI.Controllers.Song
             }
             if (new SongDataAccess().IsLabel(labelId))
             {
-                SongGlobalModel songGlobalModel = new SongGlobalModel();
-                songGlobalModel.Id = songId;
-                songGlobalModel.SongName = songUpdateModel.SongName;
-                songGlobalModel.SongFile = songUpdateModel.SongFile;
-                songGlobalModel.SongFileUrl = new SongDataAccess().UploadAudioFile(songUpdateModel.SongFile, songGlobalModel.Id);
-                songGlobalModel.ArtistName = songUpdateModel.ArtistName;
-                songGlobalModel.Genre = songUpdateModel.Genre;
-                songGlobalModel.AlbumId = songUpdateModel.AlbumId;
-                if (new SongDataAccess().UpdateSong(songGlobalModel))
+                songUpdateModel.SongId = songId;
+                if (new SongDataAccess().UpdateSong(songUpdateModel))
                 {
                     return Ok(new CustomResponseModel() { Code = "200", Phrase = "OK", Message = "Song Updated" });
                 }

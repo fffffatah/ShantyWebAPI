@@ -20,19 +20,14 @@ namespace ShantyWebAPI.Models.Album
         public string JwtToken { get; set; }
         [JsonIgnore]
         public string Id { get; set; }
-        [Required]
         [ImageValidation]
         public IFormFile CoverImage { get; set; }
         [JsonIgnore]
         public string CoverImageUrl { get; set; }
-        [Required]
         [StringLength(50, MinimumLength = 1)]
         public string AlbumName { get; set; }
-        [Required]
         public string Year { get; set; }
-        [Required]
         public string Genre { get; set; }
-        [Required]
         public string ArtistId { get; set; }
         [JsonIgnore]
         public string LabelId { get; set; }

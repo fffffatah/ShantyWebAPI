@@ -11,6 +11,7 @@ using ShantyWebAPI.Models.User;
 using ShantyWebAPI.Providers;
 using MongoDB.Bson.IO;
 using MongoDB.Bson.Serialization;
+using System.Reflection;
 
 namespace ShantyWebAPI.Controllers.User
 {
@@ -233,15 +234,29 @@ namespace ShantyWebAPI.Controllers.User
         //UPDATE USER DATA
         public bool UpdateArtist(ArtistUpdateModel artistUpdateModel)
         {
-            artistUpdateModel.ProfileImageUrl = UploadProfileImage(artistUpdateModel.ProfileImage, artistUpdateModel.Id);
+            if (artistUpdateModel.ProfileImage != null)
+            {
+                artistUpdateModel.ProfileImageUrl = UploadProfileImage(artistUpdateModel.ProfileImage, artistUpdateModel.Id);
+            }
+            else
+            {
+                artistUpdateModel.ProfileImageUrl = null;
+            }
             var collection = new MongodbConnectionProvider().GeShantyDatabase().GetCollection<BsonDocument>("artists");
             var filter = Builders<BsonDocument>.Filter.Eq("ArtistId", artistUpdateModel.Id);
-            var update = Builders<BsonDocument>.Update.Set("ProfileImageUrl", artistUpdateModel.ProfileImageUrl)
-                .Set("FirstName", artistUpdateModel.FirstName)
-                .Set("LastName", artistUpdateModel.LastName)
-                .Set("Dob", artistUpdateModel.Dob)
-                .Set("Region", artistUpdateModel.Region);
-            if(collection.UpdateOne(filter, update).ModifiedCount > 0)
+            var update = Builders<BsonDocument>.Update.Set("ArtistId", artistUpdateModel.Id);
+            foreach (PropertyInfo prop in artistUpdateModel.GetType().GetProperties())
+            {
+                var value = artistUpdateModel.GetType().GetProperty(prop.Name).GetValue(artistUpdateModel, null);
+                if ((prop.Name != "Id") && (prop.Name != "JwtToken") && (prop.Name != "ProfileImage"))
+                {
+                    if (value != null)
+                    {
+                        update = update.Set(prop.Name, value);
+                    }
+                }
+            }
+            if (collection.UpdateOne(filter, update).ModifiedCount > 0)
             {
                 return true;
             }
@@ -249,14 +264,28 @@ namespace ShantyWebAPI.Controllers.User
         }
         public bool UpdateListener(ListenerUpdateModel listenerUpdateModel)
         {
-            listenerUpdateModel.ProfileImageUrl = UploadProfileImage(listenerUpdateModel.ProfileImage, listenerUpdateModel.Id);
+            if (listenerUpdateModel.ProfileImage != null)
+            {
+                listenerUpdateModel.ProfileImageUrl = UploadProfileImage(listenerUpdateModel.ProfileImage, listenerUpdateModel.Id);
+            }
+            else
+            {
+                listenerUpdateModel.ProfileImageUrl = null;
+            }
             var collection = new MongodbConnectionProvider().GeShantyDatabase().GetCollection<BsonDocument>("listeners");
             var filter = Builders<BsonDocument>.Filter.Eq("ListenerId", listenerUpdateModel.Id);
-            var update = Builders<BsonDocument>.Update.Set("ProfileImageUrl", listenerUpdateModel.ProfileImageUrl)
-                .Set("FirstName", listenerUpdateModel.FirstName)
-                .Set("LastName", listenerUpdateModel.LastName)
-                .Set("Dob", listenerUpdateModel.Dob)
-                .Set("Region", listenerUpdateModel.Region);
+            var update = Builders<BsonDocument>.Update.Set("ListenerId", listenerUpdateModel.Id);
+            foreach (PropertyInfo prop in listenerUpdateModel.GetType().GetProperties())
+            {
+                var value = listenerUpdateModel.GetType().GetProperty(prop.Name).GetValue(listenerUpdateModel, null);
+                if ((prop.Name != "Id") && (prop.Name != "JwtToken") && (prop.Name != "ProfileImage"))
+                {
+                    if (value != null)
+                    {
+                        update = update.Set(prop.Name, value);
+                    }
+                }
+            }
             if (collection.UpdateOne(filter, update).ModifiedCount > 0)
             {
                 return true;
@@ -265,12 +294,28 @@ namespace ShantyWebAPI.Controllers.User
         }
         public bool UpdateLabel(LabelUpdateModel labelUpdateModel)
         {
-            labelUpdateModel.LabelIconUrl = UploadLabelIcon(labelUpdateModel.LabelIcon, labelUpdateModel.Id);
+            if (labelUpdateModel.LabelIcon != null)
+            {
+                labelUpdateModel.LabelIconUrl = UploadLabelIcon(labelUpdateModel.LabelIcon, labelUpdateModel.Id);
+            }
+            else
+            {
+                labelUpdateModel.LabelIconUrl = null;
+            }
             var collection = new MongodbConnectionProvider().GeShantyDatabase().GetCollection<BsonDocument>("labels");
             var filter = Builders<BsonDocument>.Filter.Eq("LabelId", labelUpdateModel.Id);
-            var update = Builders<BsonDocument>.Update.Set("LabelIconUrl", labelUpdateModel.LabelIconUrl)
-                .Set("LabelName", labelUpdateModel.LabelName)
-                .Set("EstDate", labelUpdateModel.EstDate);
+            var update = Builders<BsonDocument>.Update.Set("LabelId", labelUpdateModel.Id);
+            foreach (PropertyInfo prop in labelUpdateModel.GetType().GetProperties())
+            {
+                var value = labelUpdateModel.GetType().GetProperty(prop.Name).GetValue(labelUpdateModel, null);
+                if ((prop.Name != "Id") && (prop.Name != "JwtToken") && (prop.Name != "LabelIcon"))
+                {
+                    if (value != null)
+                    {
+                        update = update.Set(prop.Name, value);
+                    }
+                }
+            }
             if (collection.UpdateOne(filter, update).ModifiedCount > 0)
             {
                 return true;

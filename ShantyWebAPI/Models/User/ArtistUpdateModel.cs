@@ -19,21 +19,16 @@ namespace ShantyWebAPI.Models.User
         public string JwtToken { get; set; }
         [JsonIgnore]
         public string Id { get; set; }
-        [Required]
         [ImageValidation]
         public IFormFile ProfileImage { get; set; }
         [JsonIgnore]
         public string ProfileImageUrl { get; set; }
-        [Required]
         [StringLength(50, MinimumLength = 1)]
         public string FirstName { get; set; }
-        [Required]
         [StringLength(50, MinimumLength = 1)]
         public string LastName { get; set; }
-        [Required]
         [DobValidation]
         public string Dob { get; set; }
-        [Required]
         public string Region { get; set; }
     }
 }
