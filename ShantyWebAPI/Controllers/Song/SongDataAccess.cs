@@ -8,6 +8,7 @@ using ShantyWebAPI.Providers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace ShantyWebAPI.Controllers.Song
@@ -78,15 +79,30 @@ namespace ShantyWebAPI.Controllers.Song
         }
 
         //UPDATE SONG
-        public bool UpdateSong(SongGlobalModel songGlobalModel)
+        public bool UpdateSong(SongUpdateModel songUpdateModel)
         {
+            if (songUpdateModel != null)
+            {
+                songUpdateModel.SongFileUrl = UploadAudioFile(songUpdateModel.SongFile, songUpdateModel.SongId);
+            }
+            else
+            {
+                songUpdateModel.SongFileUrl = null;
+            }
             var collection = new MongodbConnectionProvider().GeShantyDatabase().GetCollection<BsonDocument>("songs");
-            var filter = Builders<BsonDocument>.Filter.Eq("SongId", songGlobalModel.Id);
-            var update = Builders<BsonDocument>.Update.Set("SongFileUrl", songGlobalModel.SongFileUrl)
-                .Set("SongName", songGlobalModel.SongName)
-                .Set("ArtistName", songGlobalModel.ArtistName)
-                .Set("AlbumId", songGlobalModel.AlbumId)
-                .Set("Genre", songGlobalModel.Genre);
+            var filter = Builders<BsonDocument>.Filter.Eq("SongId", songUpdateModel.SongId);
+            var update = Builders<BsonDocument>.Update.Set("SongId", songUpdateModel.SongId);
+            foreach (PropertyInfo prop in songUpdateModel.GetType().GetProperties())
+            {
+                var value = songUpdateModel.GetType().GetProperty(prop.Name).GetValue(songUpdateModel, null);
+                if ((prop.Name != "SongId") && (prop.Name != "JwtToken") && (prop.Name != "SongFile"))
+                {
+                    if (value != null)
+                    {
+                        update = update.Set(prop.Name, value);
+                    }
+                }
+            }
             if (collection.UpdateOne(filter, update).ModifiedCount > 0)
             {
                 return true;
