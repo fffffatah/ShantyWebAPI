@@ -81,7 +81,7 @@ namespace ShantyWebAPI.Controllers.Song
         //UPDATE SONG
         public bool UpdateSong(SongUpdateModel songUpdateModel)
         {
-            if (songUpdateModel != null)
+            if (songUpdateModel.SongFile != null)
             {
                 songUpdateModel.SongFileUrl = UploadAudioFile(songUpdateModel.SongFile, songUpdateModel.SongId);
             }
