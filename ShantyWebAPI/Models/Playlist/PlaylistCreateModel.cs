@@ -14,10 +14,13 @@ namespace ShantyWebAPI.Models.Playlist
         [FromHeader]
         [Required]
         public string JwtToken { get; set; }
+        [JsonIgnore]
+        public string PlaylistId { get; set; }
         [Required]
         public string PlaylistName { get; set; }
-        [Required]
         public IFormFile PlaylistImage { get; set; }
+        [JsonIgnore]
+        public string PlaylistImageUrl { get; set; }
         [JsonIgnore]
         public string CreatorId { get; set; }
     }

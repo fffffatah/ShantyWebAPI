@@ -44,13 +44,8 @@ namespace ShantyWebAPI.Controllers.Playlist
             }
             if (new PlaylistDataAccess().IsListenerOrArtist(playlistCreateModel.CreatorId))
             {
-                PlaylistGlobalModel playlistGlobalModel = new PlaylistGlobalModel();
-                playlistGlobalModel.PlaylistId = GenerateUserId();
-                playlistGlobalModel.PlaylistName = playlistCreateModel.PlaylistName;
-                playlistGlobalModel.PlaylistImage = playlistCreateModel.PlaylistImage;
-                playlistGlobalModel.PlaylistImageUrl = new PlaylistDataAccess().UploadPlaylistCoverImage(playlistCreateModel.PlaylistImage, playlistGlobalModel.PlaylistId);
-                playlistGlobalModel.CreatorId = playlistCreateModel.CreatorId;
-                if (new PlaylistDataAccess().CreatePlaylist(playlistGlobalModel))
+                playlistCreateModel.PlaylistId = GenerateUserId();
+                if (new PlaylistDataAccess().CreatePlaylist(playlistCreateModel))
                 {
                     return Ok(new CustomResponseModel() { Code = "200", Phrase = "OK", Message = "Playlist Created" });
                 }

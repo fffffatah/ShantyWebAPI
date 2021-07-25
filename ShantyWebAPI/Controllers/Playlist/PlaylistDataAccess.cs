@@ -9,6 +9,8 @@ using ShantyWebAPI.Models.Song;
 using ShantyWebAPI.Providers;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -40,19 +42,28 @@ namespace ShantyWebAPI.Controllers.Playlist
             dbConnection = null;
             return false;
         }
+        
 
         //INSERT ALBUM
-        public bool CreatePlaylist(PlaylistGlobalModel playlistGlobalModel)
+        public bool CreatePlaylist(PlaylistCreateModel playlistCreateModel)
         {
+            if (playlistCreateModel.PlaylistImage != null)
+            {
+                playlistCreateModel.PlaylistImageUrl = UploadPlaylistCoverImage(playlistCreateModel.PlaylistImage, playlistCreateModel.PlaylistId);
+            }
+            else
+            {
+                playlistCreateModel.PlaylistImageUrl = UploadPlaylistCoverImage(new DynamicPictureGenerator().GenerateNewImage(playlistCreateModel.PlaylistName[0].ToString(), 854, 854, 500), playlistCreateModel.PlaylistId);
+            }
             try
             {
                 var collection = new MongodbConnectionProvider().GeShantyDatabase().GetCollection<BsonDocument>("playlists");
                 var document = new BsonDocument
                     {
-                        { "PlaylistId", playlistGlobalModel.PlaylistId },
-                        { "PlaylistName", playlistGlobalModel.PlaylistName },
-                        { "PlaylistImageUrl", playlistGlobalModel.PlaylistImageUrl },
-                        { "CreatorId", playlistGlobalModel.CreatorId },
+                        { "PlaylistId", playlistCreateModel.PlaylistId },
+                        { "PlaylistName", playlistCreateModel.PlaylistName },
+                        { "PlaylistImageUrl", playlistCreateModel.PlaylistImageUrl },
+                        { "CreatorId", playlistCreateModel.CreatorId },
                         { "Songs", new BsonArray() }
                     };
                 collection.InsertOne(document);
