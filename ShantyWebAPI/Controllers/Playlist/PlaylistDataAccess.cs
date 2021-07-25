@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace ShantyWebAPI.Controllers.Playlist
@@ -73,6 +74,38 @@ namespace ShantyWebAPI.Controllers.Playlist
             {
                 return false;
             }
+        }
+
+        //UPDATE PLAYLIST
+        public bool UpdatePlaylist(PlaylistCreateModel playlistCreateModel)
+        {
+            if (playlistCreateModel.PlaylistImage != null)
+            {
+                playlistCreateModel.PlaylistImageUrl = UploadPlaylistCoverImage(playlistCreateModel.PlaylistImage, playlistCreateModel.PlaylistId);
+            }
+            else
+            {
+                playlistCreateModel.PlaylistImageUrl = UploadPlaylistCoverImage(new DynamicPictureGenerator().GenerateNewImage(playlistCreateModel.PlaylistName[0].ToString(), 854, 854, 500), playlistCreateModel.PlaylistId);
+            }
+            var collection = new MongodbConnectionProvider().GeShantyDatabase().GetCollection<BsonDocument>("playlists");
+            var filter = Builders<BsonDocument>.Filter.Eq("PlaylistId", playlistCreateModel.PlaylistId);
+            var update = Builders<BsonDocument>.Update.Set("PlaylistId", playlistCreateModel.PlaylistId);
+            foreach (PropertyInfo prop in playlistCreateModel.GetType().GetProperties())
+            {
+                var value = playlistCreateModel.GetType().GetProperty(prop.Name).GetValue(playlistCreateModel, null);
+                if ((prop.Name != "PlaylistId") && (prop.Name != "JwtToken") && (prop.Name != "PlaylistImage"))
+                {
+                    if (value != null)
+                    {
+                        update = update.Set(prop.Name, value);
+                    }
+                }
+            }
+            if (collection.UpdateOne(filter, update).ModifiedCount > 0)
+            {
+                return true;
+            }
+            return false;
         }
 
         //ADD SONG PLAYLIST

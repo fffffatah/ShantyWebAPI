@@ -56,6 +56,31 @@ namespace ShantyWebAPI.Controllers.Playlist
             }
             return BadRequest(new CustomResponseModel() { Code = "400", Phrase = "BadRequest", Message = "Playlist Creation Failed" });
         }
+
+        //UPDATE PLAYLIST
+        [HttpPost]
+        [Route("update/playlist")]
+        public ActionResult<CustomResponseModel> UpdatePlaylist([FromForm] PlaylistCreateModel playlistCreateModel, [Required]string playlistId)
+        {
+            playlistCreateModel.CreatorId = new PlaylistDataAccess().JwtTokenValidation(playlistCreateModel.JwtToken);
+            if (playlistCreateModel.CreatorId == "")
+            {
+                return Unauthorized(new CustomResponseModel() { Code = "401", Phrase = "Unauthorized", Message = "Invalid Jwt Token" });
+            }
+            if (new PlaylistDataAccess().IsListenerOrArtist(playlistCreateModel.CreatorId))
+            {
+                playlistCreateModel.PlaylistId = playlistId;
+                if (new PlaylistDataAccess().UpdatePlaylist(playlistCreateModel))
+                {
+                    return Ok(new CustomResponseModel() { Code = "200", Phrase = "OK", Message = "Playlist Updated" });
+                }
+            }
+            else
+            {
+                return Unauthorized(new CustomResponseModel() { Code = "401", Phrase = "Unauthorized", Message = "Playlist Updator Must be a Listener or Artist" });
+            }
+            return BadRequest(new CustomResponseModel() { Code = "400", Phrase = "BadRequest", Message = "Playlist Updation Failed" });
+        }
         //DELETE PLAYLIST
         [HttpGet]
         [Route("delete/playlist")]
