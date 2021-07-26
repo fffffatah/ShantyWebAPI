@@ -84,7 +84,7 @@ namespace ShantyWebAPI.Controllers.Playlist
         //DELETE PLAYLIST
         [HttpGet]
         [Route("delete/playlist")]
-        public ActionResult<CustomResponseModel> DeleteAlbum([FromHeader][Required] string jwtToken, [Required] string playlistId)
+        public ActionResult<CustomResponseModel> DeletePlaylist([FromHeader][Required] string jwtToken, [Required] string playlistId)
         {
             string userId = new PlaylistDataAccess().JwtTokenValidation(jwtToken);
             if (userId == "")
