@@ -2,14 +2,19 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using ShantyWebAPI.CustomAttributes;
 
 namespace ShantyWebAPI.Models.User
 {
     public class ArtistRegistrationModel
     {
+        [FromHeader]
+        [Required]
+        public string JwtToken { get; set; }
         [Required]
         [RegularExpression(@"^[a-zA-Z][a-zA-Z0-9]{5,11}$", ErrorMessage = "Username Must be between 6-12 Characters and Must Not Contain Special Character")]
         [UsernameValidation]
@@ -38,7 +43,5 @@ namespace ShantyWebAPI.Models.User
         public string Dob { get; set; }
         [Required]
         public string Region { get; set; }
-        [Required]
-        public string LabelId { get; set; }
     }
 }

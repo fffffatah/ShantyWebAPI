@@ -471,6 +471,12 @@ namespace ShantyWebAPI.Controllers.User
             dbConnection.Dispose();
             return true;
         }
+        public void SendArtistVerificationEmail(string name, string email, string id, string pass)
+        {
+            string url = Environment.GetEnvironmentVariable("EMAIL_VERIFICATION_URL") + id; //YOUR FRONTEND URL, MAKE SURE TO PASS THE API SUBSCRIPTION KEY AS HEADER AS WELL
+            SendgridEmailProvider sendgridEmailProvider = new SendgridEmailProvider();
+            sendgridEmailProvider.Send("no-reply@shanty.com", "Shanty", email, name, "Shanty - Artist Verification", "Confirmation Email for Your Shanty Artist Account", "<strong>Your Email: "+email+"</strong><br><strong>Your Password: "+pass+"</strong><br><strong>Confirm Your Email Address: <u><a href=" + url + " target=\"_blank\">Click Here</a></u></strong><br><strong>Note: Please Reset Your Password after Verifaction!</strong>");
+        }
 
         //MATCH PASSWORD
         public bool MatchPassword(string id, string pass)
