@@ -253,6 +253,26 @@ namespace ShantyWebAPI.Controllers.User
 
         //GET USERS
         [HttpGet]
+        [Route("get/artist/all")] //For Label
+        public ActionResult<List<ArtistGetInfoModel>> GetAllArtistInfo([FromHeader][Required] string jwtToken)
+        {
+            string labelId = new UserDataAccess().JwtTokenValidation(jwtToken);
+            if (labelId == "")
+            {
+                return Unauthorized(new CustomResponseModel() { Code = "401", Phrase = "Unauthorized", Message = "Invalid Jwt Token" });
+            }
+            if (new UserDataAccess().GetUserType(labelId) != "label")
+            {
+                return Unauthorized(new CustomResponseModel() { Code = "401", Phrase = "Unauthorized", Message = "Invalid Label" });
+            }
+            List<ArtistGetInfoModel> artistGetInfoModels = new UserDataAccess().GetAllArtistInfo(labelId);
+            if (artistGetInfoModels != null)
+            {
+                return artistGetInfoModels;
+            }
+            return BadRequest(new CustomResponseModel() { Code = "400", Phrase = "BadRequest", Message = "Failed To Get All Artist" });
+        }
+        [HttpGet]
         [Route("get/artist")]
         public ActionResult<ArtistGetInfoModel> GetArtistInfo([FromHeader][Required] string jwtToken)
         {
