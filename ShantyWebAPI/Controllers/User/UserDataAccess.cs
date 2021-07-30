@@ -17,11 +17,6 @@ namespace ShantyWebAPI.Controllers.User
 {
     public class UserDataAccess
     {
-        MysqlConnectionProvider dbConnection;
-        public UserDataAccess()
-        {
-            dbConnection = new MysqlConnectionProvider();
-        }
         //COMMON METHODS
         public string UploadProfileImage(IFormFile profileImage, string id)
         {
@@ -58,6 +53,7 @@ namespace ShantyWebAPI.Controllers.User
         {
             bool InsertListenerMysql()
             {
+                MysqlConnectionProvider dbConnection = new MysqlConnectionProvider();
                 dbConnection.CreateQuery("INSERT INTO users(id, username, email, phone, pass, type, isemailverified) VALUES ('" + listener.Id + "','" + listener.Username + "','" + listener.Email + "','" + listener.Phone + "','" + listener.Pass + "','" + listener.Type + "','" + listener.IsEmailVerified + "')");
                 if ((dbConnection.DoNoQuery()) < 1)
                 {
@@ -98,6 +94,7 @@ namespace ShantyWebAPI.Controllers.User
         {
             bool InsertLabelMysql()
             {
+                MysqlConnectionProvider dbConnection = new MysqlConnectionProvider();
                 dbConnection.CreateQuery("INSERT INTO users(id, username, email, phone, pass, type, isemailverified) VALUES ('" + label.Id + "','" + label.Username + "','" + label.Email + "','" + label.Phone + "','" + label.Pass + "','" + label.Type + "','" + label.IsEmailVerified + "')");
                 if ((dbConnection.DoNoQuery()) < 1)
                 {
@@ -137,6 +134,7 @@ namespace ShantyWebAPI.Controllers.User
         {
             bool InsertArtistMysql()
             {
+                MysqlConnectionProvider dbConnection = new MysqlConnectionProvider();
                 dbConnection.CreateQuery("INSERT INTO users(id, username, email, phone, pass, type, isemailverified) VALUES ('" + artist.Id + "','" + artist.Username + "','" + artist.Email + "','" + artist.Phone + "','" + artist.Pass + "','" + artist.Type + "','" + artist.IsEmailVerified + "')");
                 if ((dbConnection.DoNoQuery()) < 1)
                 {
@@ -195,6 +193,7 @@ namespace ShantyWebAPI.Controllers.User
             }
             SendgridEmailProvider sendgridEmailProvider = new SendgridEmailProvider();
             sendgridEmailProvider.Send("no-reply@shanty.com", "Shanty", email, "User", "Shanty - OTP", "OTP for Password Reset", "<strong>OTP: " + otp + "</strong>");
+            MysqlConnectionProvider dbConnection = new MysqlConnectionProvider();
             dbConnection.CreateQuery("SELECT id,isemailverified FROM users WHERE email='" + email + "'");
             UserLoginResponseModel userLoginResponseModel = null;
             string isEmailVerified = "";
@@ -324,8 +323,45 @@ namespace ShantyWebAPI.Controllers.User
         }
 
         //GET USER DATA
+        public List<ArtistGetInfoModel> GetAllArtistInfo(string labelId)
+        {
+            List<ArtistGetInfoModel> artistGetInfoModels = null;
+            var collection = new MongodbConnectionProvider().GeShantyDatabase().GetCollection<BsonDocument>("artists");
+            var builder = Builders<BsonDocument>.Filter;
+            var filter = builder.Eq("Label", labelId);
+            var results = collection.Find(filter).ToList();
+            foreach(BsonDocument result in results)
+            {
+                if (result != null)
+                {
+                    ArtistGetInfoModel res = BsonSerializer.Deserialize<ArtistGetInfoModel>(result);
+                    try
+                    {
+                        MysqlConnectionProvider dbConnection = new MysqlConnectionProvider();
+                        dbConnection.CreateQuery("SELECT username,email,phone FROM users WHERE id='" + res.ArtistId + "'");
+                        MySqlDataReader reader = dbConnection.DoQuery();
+                        while (reader.Read())
+                        {
+                            res.Username = reader["username"].ToString();
+                            res.Email = reader["email"].ToString();
+                            res.Phone = reader["phone"].ToString();
+                        }
+                        dbConnection.Dispose();
+                        dbConnection = null;
+                        artistGetInfoModels.Add(res);
+                    }
+                    catch (Exception)
+                    {
+                        return artistGetInfoModels;
+                    }
+                }
+            }
+            
+            return artistGetInfoModels;
+        }
         public ArtistGetInfoModel GetArtistInfo(string Id)
         {
+            MysqlConnectionProvider dbConnection = new MysqlConnectionProvider();
             dbConnection.CreateQuery("SELECT username,email,phone FROM users WHERE id='"+Id+"'");
             ArtistGetInfoModel artistGetInfoModel = null;
             MySqlDataReader reader = dbConnection.DoQuery();
@@ -358,6 +394,7 @@ namespace ShantyWebAPI.Controllers.User
         }
         public ListenerGetInfoModel GetListenerInfo(string Id)
         {
+            MysqlConnectionProvider dbConnection = new MysqlConnectionProvider();
             dbConnection.CreateQuery("SELECT username,email,phone FROM users WHERE id='" + Id + "'");
             ListenerGetInfoModel listenerGetInfoModel = null;
             MySqlDataReader reader = dbConnection.DoQuery();
@@ -389,6 +426,7 @@ namespace ShantyWebAPI.Controllers.User
         }
         public LabelGetInfoModel GetLabelInfo(string Id)
         {
+            MysqlConnectionProvider dbConnection = new MysqlConnectionProvider();
             dbConnection.CreateQuery("SELECT username,email,phone FROM users WHERE id='" + Id + "'");
             LabelGetInfoModel labelGetInfoModel = null;
             MySqlDataReader reader = dbConnection.DoQuery();
@@ -421,6 +459,7 @@ namespace ShantyWebAPI.Controllers.User
         //USER LOGIN
         public string LoginUser(string email, string pass)
         {
+            MysqlConnectionProvider dbConnection = new MysqlConnectionProvider();
             dbConnection.CreateQuery("SELECT id,pass,isemailverified FROM users WHERE email='" + email + "'");
             UserLoginResponseModel userLoginResponseModel = null;
             string passFromDb = "";
@@ -462,6 +501,7 @@ namespace ShantyWebAPI.Controllers.User
         }
         public bool VerifyEmail(string id)
         {
+            MysqlConnectionProvider dbConnection = new MysqlConnectionProvider();
             dbConnection.CreateQuery("UPDATE users SET isemailverified='true' WHERE id='" + id+"'");
             if ((dbConnection.DoNoQuery()) < 1)
             {
@@ -470,6 +510,12 @@ namespace ShantyWebAPI.Controllers.User
             }
             dbConnection.Dispose();
             return true;
+        }
+        public void SendArtistVerificationEmail(string name, string email, string id, string pass)
+        {
+            string url = Environment.GetEnvironmentVariable("EMAIL_VERIFICATION_URL") + id; //YOUR FRONTEND URL, MAKE SURE TO PASS THE API SUBSCRIPTION KEY AS HEADER AS WELL
+            SendgridEmailProvider sendgridEmailProvider = new SendgridEmailProvider();
+            sendgridEmailProvider.Send("no-reply@shanty.com", "Shanty", email, name, "Shanty - Artist Verification", "Confirmation Email for Your Shanty Artist Account", "<strong>Your Email: "+email+"</strong><br><strong>Your Password: "+pass+"</strong><br><strong>Confirm Your Email Address: <u><a href=" + url + " target=\"_blank\">Click Here</a></u></strong><br><strong>Note: Please Reset Your Password after Verifaction!</strong>");
         }
 
         //MATCH PASSWORD

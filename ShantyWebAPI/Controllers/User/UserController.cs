@@ -89,6 +89,15 @@ namespace ShantyWebAPI.Controllers.User
         public ActionResult<CustomResponseModel> PutArtist([FromForm] ArtistRegistrationModel artistRegistrationModel)
         {
             ArtistGlobalModel artistGlobalModel = new ArtistGlobalModel();
+            artistGlobalModel.LabelId = new UserDataAccess().JwtTokenValidation(artistRegistrationModel.JwtToken);
+            if (artistGlobalModel.LabelId == "")
+            {
+                return Unauthorized(new CustomResponseModel() { Code = "401", Phrase = "Unauthorized", Message = "Invalid Jwt Token" });
+            }
+            else if(new UserDataAccess().GetUserType(artistGlobalModel.LabelId) != "label")
+            {
+                return Unauthorized(new CustomResponseModel() { Code = "401", Phrase = "Unauthorized", Message = "Artist Creator Must be a Label" });
+            }
             artistGlobalModel.Id = GenerateUserId(artistRegistrationModel.Username + DateTime.Now.ToString("dddd, dd MMMM yyyy HH:mm:ss"));
             artistGlobalModel.ProfileImage = artistRegistrationModel.ProfileImage;
             artistGlobalModel.ProfileImageUrl = new UserDataAccess().UploadProfileImage(artistGlobalModel.ProfileImage, artistGlobalModel.Id);
@@ -103,10 +112,9 @@ namespace ShantyWebAPI.Controllers.User
             artistGlobalModel.IsEmailVerified = "false";
             artistGlobalModel.IsVerified = "false";
             artistGlobalModel.Type = "artist";
-            artistGlobalModel.LabelId = artistRegistrationModel.LabelId;
             if(new UserDataAccess().RegisterArtist(artistGlobalModel))
             {
-                new UserDataAccess().SendVerificationEmail(artistGlobalModel.FirstName + " " + artistGlobalModel.LastName, artistGlobalModel.Email, artistGlobalModel.Id);
+                new UserDataAccess().SendArtistVerificationEmail(artistGlobalModel.FirstName + " " + artistGlobalModel.LastName, artistGlobalModel.Email, artistGlobalModel.Id, artistRegistrationModel.Pass);
                 return Ok(new CustomResponseModel() { Code = "200", Phrase = "OK", Message = "Artist Account Created" });
             }
             return BadRequest(new CustomResponseModel() { Code = "400", Phrase = "BadRequest", Message = "Artist Account Creation Failed" });
@@ -244,6 +252,26 @@ namespace ShantyWebAPI.Controllers.User
         }
 
         //GET USERS
+        [HttpGet]
+        [Route("get/artist/all")] //For Label
+        public ActionResult<List<ArtistGetInfoModel>> GetAllArtistInfo([FromHeader][Required] string jwtToken)
+        {
+            string labelId = new UserDataAccess().JwtTokenValidation(jwtToken);
+            if (labelId == "")
+            {
+                return Unauthorized(new CustomResponseModel() { Code = "401", Phrase = "Unauthorized", Message = "Invalid Jwt Token" });
+            }
+            if (new UserDataAccess().GetUserType(labelId) != "label")
+            {
+                return Unauthorized(new CustomResponseModel() { Code = "401", Phrase = "Unauthorized", Message = "Invalid Label" });
+            }
+            List<ArtistGetInfoModel> artistGetInfoModels = new UserDataAccess().GetAllArtistInfo(labelId);
+            if (artistGetInfoModels != null)
+            {
+                return artistGetInfoModels;
+            }
+            return BadRequest(new CustomResponseModel() { Code = "400", Phrase = "BadRequest", Message = "Failed To Get All Artist" });
+        }
         [HttpGet]
         [Route("get/artist")]
         public ActionResult<ArtistGetInfoModel> GetArtistInfo([FromHeader][Required] string jwtToken)
