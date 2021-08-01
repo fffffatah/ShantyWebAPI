@@ -5,14 +5,18 @@ using System.Threading.Tasks;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Bson.Serialization.Attributes;
+using System.Text.Json.Serialization;
 
 namespace ShantyWebAPI.Models.User
 {
     [BsonIgnoreExtraElements]
     public class ArtistGetInfoModel
     {
+        [JsonIgnore]
         public string Username { get; set; }
+        [JsonIgnore]
         public string Email { get; set; }
+        [JsonIgnore]
         public string Phone { get; set; }
         [BsonElement("ArtistId")]
         public string ArtistId { get; set; }
