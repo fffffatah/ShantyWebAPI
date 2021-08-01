@@ -11,6 +11,8 @@ namespace ShantyWebAPI.Controllers.Search
     [ApiController]
     public class SearchController : ControllerBase
     {
-
+        //[HttpGet]
+        //[Route("search/all")]
+        //todo
     }
 }

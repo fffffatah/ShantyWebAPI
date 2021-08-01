@@ -325,38 +325,30 @@ namespace ShantyWebAPI.Controllers.User
         //GET USER DATA
         public List<ArtistGetInfoModel> GetAllArtistInfo(string labelId)
         {
-            List<ArtistGetInfoModel> artistGetInfoModels = null;
+            List<ArtistGetInfoModel> artistGetInfoModels = new List<ArtistGetInfoModel>();
             var collection = new MongodbConnectionProvider().GeShantyDatabase().GetCollection<BsonDocument>("artists");
             var builder = Builders<BsonDocument>.Filter;
-            var filter = builder.Eq("Label", labelId);
+            var filter = builder.Eq("LabelId", labelId);
             var results = collection.Find(filter).ToList();
             foreach(BsonDocument result in results)
             {
                 if (result != null)
                 {
                     ArtistGetInfoModel res = BsonSerializer.Deserialize<ArtistGetInfoModel>(result);
-                    try
-                    {
-                        MysqlConnectionProvider dbConnection = new MysqlConnectionProvider();
-                        dbConnection.CreateQuery("SELECT username,email,phone FROM users WHERE id='" + res.ArtistId + "'");
-                        MySqlDataReader reader = dbConnection.DoQuery();
-                        while (reader.Read())
-                        {
-                            res.Username = reader["username"].ToString();
-                            res.Email = reader["email"].ToString();
-                            res.Phone = reader["phone"].ToString();
-                        }
-                        dbConnection.Dispose();
-                        dbConnection = null;
-                        artistGetInfoModels.Add(res);
-                    }
-                    catch (Exception)
-                    {
-                        return artistGetInfoModels;
-                    }
+                    //MysqlConnectionProvider dbConnection = new MysqlConnectionProvider();
+                    //dbConnection.CreateQuery("SELECT username,email,phone FROM users WHERE id='" + res.ArtistId + "'");
+                    //MySqlDataReader reader = dbConnection.DoQuery();
+                    //while (reader.Read())
+                    //{
+                    //    res.Username = reader["username"].ToString();
+                    //    res.Email = reader["email"].ToString();
+                    //    res.Phone = reader["phone"].ToString();
+                    //}
+                    //dbConnection.Dispose();
+                    //dbConnection = null;
+                    artistGetInfoModels.Add(res);
                 }
             }
-            
             return artistGetInfoModels;
         }
         public ArtistGetInfoModel GetArtistInfo(string Id)
