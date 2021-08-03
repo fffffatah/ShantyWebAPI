@@ -53,6 +53,7 @@ namespace ShantyWebAPI.Controllers.Song
                 songGlobalModel.Genre = songUploadModel.Genre;
                 songGlobalModel.AlbumId = songUploadModel.AlbumId;
                 songGlobalModel.TimesStreamed = 0;
+                songGlobalModel.CoverImageUrl= new SongDataAccess().UploadSongCoverImage(songUploadModel.CoverImage, songGlobalModel.Id);
                 if (new SongDataAccess().UploadSong(songGlobalModel))
                 {
                     return Ok(new CustomResponseModel() { Code = "200", Phrase = "OK", Message = "Song Uploaded" });

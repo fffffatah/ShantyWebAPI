@@ -22,6 +22,12 @@ namespace ShantyWebAPI.Controllers.Song
             AzureBlobServiceProvider azureBlob = new AzureBlobServiceProvider();
             return azureBlob.UploadFileToBlob(songName, audioFile);
         }
+        public string UploadSongCoverImage(IFormFile coverImage, string id)
+        {
+            string songName = "songcoverart/" + id;
+            AzureBlobServiceProvider azureBlob = new AzureBlobServiceProvider();
+            return azureBlob.UploadFileToBlob(songName, coverImage);
+        }
         public string JwtTokenValidation(string jwt)
         {
             return new JwtAuthenticationProvider().ValidateToken(jwt);
@@ -67,7 +73,8 @@ namespace ShantyWebAPI.Controllers.Song
                         { "AlbumId", songGlobalModel.AlbumId },
                         { "ArtistName", songGlobalModel.ArtistName },
                         { "TimesStreamed", songGlobalModel.TimesStreamed},
-                        { "Genre", songGlobalModel.Genre }
+                        { "Genre", songGlobalModel.Genre },
+                        { "CoverImageUrl", songGlobalModel.CoverImageUrl}
                     };
                 collection.InsertOne(document);
                 return true;
@@ -95,7 +102,7 @@ namespace ShantyWebAPI.Controllers.Song
             foreach (PropertyInfo prop in songUpdateModel.GetType().GetProperties())
             {
                 var value = songUpdateModel.GetType().GetProperty(prop.Name).GetValue(songUpdateModel, null);
-                if ((prop.Name != "SongId") && (prop.Name != "JwtToken") && (prop.Name != "SongFile"))
+                if ((prop.Name != "SongId") && (prop.Name != "JwtToken") && (prop.Name != "SongFile") && (prop.Name != "CoverImage"))
                 {
                     if (value != null)
                     {
@@ -129,6 +136,7 @@ namespace ShantyWebAPI.Controllers.Song
                 songGetModel.Genre = res.Genre;
                 songGetModel.SongFileUrl = res.SongFileUrl;
                 songGetModel.TimesStreamed = res.TimesStreamed;
+                songGetModel.CoverImageUrl = res.CoverImageUrl;
             }
             return songGetModel;
         }
@@ -136,7 +144,7 @@ namespace ShantyWebAPI.Controllers.Song
         //GET ALBUM LIST FOR LABEL OR ARTIST
         public List<SongGetModel> GetSongsAlbum(string albumId)
         {
-            List<SongGetModel> songGetModels = null;
+            List<SongGetModel> songGetModels = new List<SongGetModel>();
             var collection = new MongodbConnectionProvider().GeShantyDatabase().GetCollection<BsonDocument>("songs");
             var builder = Builders<BsonDocument>.Filter;
             var filter = builder.Eq("AlbumId", albumId);
@@ -154,6 +162,7 @@ namespace ShantyWebAPI.Controllers.Song
                     songGetModel.Genre = res.Genre;
                     songGetModel.SongFileUrl = res.SongFileUrl;
                     songGetModel.TimesStreamed = res.TimesStreamed;
+                    songGetModel.CoverImageUrl = res.CoverImageUrl;
                     songGetModels.Add(songGetModel);
                 }
             }

@@ -127,6 +127,7 @@ namespace ShantyWebAPI.Controllers.Playlist
                 songGetModel.Genre = res.Genre;
                 songGetModel.SongFileUrl = res.SongFileUrl;
                 songGetModel.TimesStreamed = res.TimesStreamed;
+                songGetModel.CoverImageUrl = res.CoverImageUrl;
             }
             else
             {
@@ -141,7 +142,8 @@ namespace ShantyWebAPI.Controllers.Playlist
                         { "AlbumId", songGetModel.AlbumId },
                         { "ArtistName", songGetModel.ArtistName },
                         { "TimesStreamed", songGetModel.TimesStreamed},
-                        { "Genre", songGetModel.Genre }
+                        { "Genre", songGetModel.Genre },
+                        { "CoverImageUrl", songGetModel.CoverImageUrl}
             });
             if(collectionPlaylist.UpdateOne(playlistFilter, update).ModifiedCount > 0)
             {

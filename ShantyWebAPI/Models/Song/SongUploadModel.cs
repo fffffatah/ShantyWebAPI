@@ -30,5 +30,10 @@ namespace ShantyWebAPI.Models.Song
         public string SongFileUrl { get; set; }
         [Required]
         public string AlbumId { get; set; }
+        [Required]
+        [ImageValidation]
+        public IFormFile CoverImage { get; set; }
+        [JsonIgnore]
+        public string CoverImageUrl { get; set; }
     }
 }
