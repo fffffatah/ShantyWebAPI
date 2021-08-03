@@ -9,6 +9,8 @@ namespace ShantyWebAPI.Models.Song
     public class SongGlobalModel
     {
         public string Id { get; set; }
+        public IFormFile CoverImage { get; set; }
+        public string CoverImageUrl { get; set; }
         public string SongName { get; set; }
         public string ArtistName { get; set; }
         public IFormFile SongFile { get; set; }

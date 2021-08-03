@@ -11,6 +11,7 @@ namespace ShantyWebAPI.Models.Song
     public class SongGetModel
     {
         public string SongId { get; set; }
+        public string CoverImageUrl { get; set; }
         public string SongName { get; set; }
         public string ArtistName { get; set; }
         public string SongFileUrl { get; set; }
