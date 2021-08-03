@@ -138,7 +138,7 @@ namespace ShantyWebAPI.Controllers.Album
         //GET ALBUM LIST FOR LABEL OR ARTIST
         public List<AlbumGetModel> GetAlbumList(string id)
         {
-            List<AlbumGetModel> albumGetModels = null;
+            List<AlbumGetModel> albumGetModels = new List<AlbumGetModel>();
             var collection = new MongodbConnectionProvider().GeShantyDatabase().GetCollection<BsonDocument>("albums");
             var builder = Builders<BsonDocument>.Filter;
             var filter = builder.Eq("LabelId", id) | builder.Eq("ArtistId", id);
