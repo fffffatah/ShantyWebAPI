@@ -25,7 +25,7 @@ namespace ShantyWebAPI.Controllers.Favorite
                 return Unauthorized(new CustomResponseModel() { Code = "401", Phrase = "Unauthorized", Message = "Invalid Jwt Token" });
             }
             FavoriteModel favorite = new FavoriteDataAccess().GetFavorite(userId);
-            if (favorite != null)
+            if (favorite != null || favorite.SongGetModels.Count != 0)
             {
                 return favorite;
             }
