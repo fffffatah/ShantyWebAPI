@@ -24,11 +24,11 @@ namespace ShantyWebAPI.Controllers.Search
                 return Unauthorized(new CustomResponseModel() { Code = "401", Phrase = "Unauthorized", Message = "Invalid Jwt Token" });
             }
             SearchResultModel searchResultModels = new SearchDataAccess().SearchResult(query);
-            if (searchResultModels != null)
+            if (searchResultModels != null && (searchResultModels.AlbumGetModels.Count != 0 || searchResultModels.ArtistGetInfoModels.Count != 0 || searchResultModels.SongGetModels.Count !=0))
             {
                 return searchResultModels;
             }
-            return BadRequest(new CustomResponseModel() { Code = "400", Phrase = "BadRequest", Message = "Search Failed" });
+            return NotFound(new CustomResponseModel() { Code = "404", Phrase = "NotFound", Message = "No Search Result" });
         }
     }
 }
