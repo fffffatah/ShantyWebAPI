@@ -33,7 +33,7 @@ namespace ShantyWebAPI.Controllers.Search
             var songResults = songCollection.Find(songfilter).ToList();
             var albumfilter = new BsonDocument { { "AlbumName", new BsonDocument { { "$regex", query }, { "$options", "i" } } } };
             var albumResults = albumCollection.Find(albumfilter).ToList();
-            var artistfilter = new BsonDocument { { "Firstname", new BsonDocument { { "$regex", query }, { "$options", "i" } } } };
+            var artistfilter = new BsonDocument { { "FirstName", new BsonDocument { { "$regex", query }, { "$options", "i" } } } };
             var artistResults = artistCollection.Find(artistfilter).ToList();
             foreach (BsonDocument result in songResults)
             {
