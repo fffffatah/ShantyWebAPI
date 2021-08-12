@@ -15,7 +15,7 @@ namespace ShantyWebAPI.CustomAttributes
             if (value != null)
             {
                 file = (IFormFile)value;
-                if (!(file.ContentType == "audio/ogg"))
+                if (!(file.ContentType == "audio/mpeg"))
                 {
                     return new ValidationResult(ErrorMessage = "Invalid Audio Type");
                 }
